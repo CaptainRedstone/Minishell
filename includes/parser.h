@@ -6,15 +6,12 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:18:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/09 17:02:25 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/06/09 17:31:16 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 typedef struct s_token	t_token;
-typedef struct s_cmd	t_cmd;
-typedef struct s_pipe	t_pipe;
-typedef struct s_redir	t_redir;
-typedef struct s_exec	t_exec;
+typedef struct s_ast	t_ast;
 
 struct s_token
 {
@@ -26,30 +23,31 @@ struct s_token
 
 struct s_cmd
 {
-	int		type;
 	char	**args;
 };
 
 struct s_pipe
 {
-	int		type;
-	t_cmd	*left;
-	t_cmd	*right;
+	t_ast	*left;
+	t_ast	*right;
 };
 
 struct s_redir
 {
-	int		type;
 	char	*path;
 	int		fd;
 	int		mode;
-	t_cmd	*cmd;
+	t_ast	*cmd;
 };
 
-struct s_exec
+struct s_ast
 {
-	int		type;
-	char	**args;
+	int	node_type;
+	union u_node {
+		s_cmd	cmd;
+		s_pipe	pipe;
+		s_redir	redir;
+	}	node;
 };
 
 enum e_token_type
@@ -57,9 +55,5 @@ enum e_token_type
 	e_word,
 	e_quote,
 	e_pipe,
-	e_redir_in,
-	e_redir_out,
-	e_redir_append,
-	e_exec,
-	e_flag,
+	e_redir,
 };
