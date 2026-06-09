@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:18:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/09 16:57:01 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/06/09 17:02:25 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,11 @@ struct s_exec
 enum e_token_type
 {
 	e_word,
-	e_pipe,
 	e_quote,
-	e_
+	e_pipe,
+	e_redir_in,
+	e_redir_out,
+	e_redir_append,
+	e_exec,
+	e_flag,
 };
