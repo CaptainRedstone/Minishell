@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/20 11:58:09 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/06/20 16:09:24 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,18 @@ int	count_tokens(const char **arr)
 	count = 0;
 	if (!arr)
 		return (count);
+	printf("ok 3\n");
 	while(*arr++)
 		count++;
 	return (count);
 }
 
-int	fill_tokens(t_token *tk, char **arr)
+int	fill_tokens(t_token *tk, const char **arr)
 {
-	char	**curr;
+	const char	**curr;
 
 	if (!tk)
-		return (free_array(arr), 0);
+		return (free_array((char **)arr), 0);
 	curr = arr;
 	while (*curr)
 	{
@@ -49,24 +50,31 @@ int	fill_tokens(t_token *tk, char **arr)
 	}
 	(*tk).type = e_null;
 	(*tk).val = NULL;
-	return (free_array(arr), 1);
+	return (free_array((char **)arr), 1);
 }
 
-/**
- * @brief	Split string in tokens for parsing
- */
-t_token	*tokenize(char *line)
+void	print_tokens(const t_token *tokens)
 {
-	t_token	*tk;
-	char	**arr;
+	int	i;
+
+	i = 0;
+	while (tokens && tokens->val)
+	{
+		printf("token[%d]: %s\n", i++, tokens->val);
+		tokens++;
+	}
+}
+
+int	tokenize(char *line, t_token **pt_tokens)
+{
+	const char	**arr;
 
 	if (!line)
-		return (NULL);
-	if (!ft_strchr(line, '\'') && !ft_strchr(line, '\"'))
-	{
-		arr = ft_split(line, ' ');
-		tk = malloc((count_tokens(arr) + 1) * sizeof(t_token));
-		if (!fill_tokens(tk, arr))
-			return (free(tk), NULL);
-	}
+		return (0);
+	arr = (const char **)ft_split(line, ' ');
+	pt_tokens = malloc((count_tokens(arr) + 1) * sizeof(t_token));
+	if (!fill_tokens(*pt_tokens, arr))
+		return (free(*pt_tokens), 0);
+	print_tokens(*pt_tokens);
+	return (1);
 }

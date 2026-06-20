@@ -1,7 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define _XOPEN_SOURCE 500
 
 typedef struct s_command
 {

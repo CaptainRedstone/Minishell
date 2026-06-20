@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:18:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/20 11:27:04 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/06/20 16:07:20 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,39 @@ enum e_node_type
 	e_node_pipe,
 	e_node_redir,
 };
+
+/**
+ * @brief Count number of tokens in array
+ * 
+ * @param arr array of strings with raw tokens
+ * @return number of tokens
+ */
+int	count_tokens(const char **arr);
+
+/**
+ * @brief Fill token list from split string array
+ * 
+ * @param tk empty list of tokens to be filled
+ * @param arr split string array with raw tokens
+ * 
+ * @return 1 on success, else 0
+ */
+int	fill_tokens(t_token *tokens, const char **arr);
+
+/**
+ * @brief Print tokens in order
+ * 
+ * @param tokens token list
+ */
+void	print_tokens(const t_token *tokens);
+
+/**
+ * @brief	Split input string into list of tokens for further parsing
+ * 
+ * @param line raw string of input commands
+ * @param pt_tokens address of token list to fill
+ * @return 1 on success, else 0
+ */
+int	tokenize(char *line, t_token **pt_tokens);
 
 #endif
