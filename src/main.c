@@ -7,12 +7,11 @@ int	main(int argc, char **argv, char **envp)
 {
 	char	*line;
 	char	*prompt;
-	t_token	**pt_tokens;
+	t_token	*tokens[1];
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
-	pt_tokens = malloc(sizeof(t_token *));
 	print_welcome();
 	create_signal();
 	while (1)
@@ -28,9 +27,9 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		if (ft_strlen(line) > 0)
 		{
-			tokenize(line, pt_tokens);
-			print_tokens(*pt_tokens);
-			printf("sizeof tokens %zu\n", sizeof(*pt_tokens));
+			tokenize(line, tokens);
+			print_tokens(tokens[0]);
+			printf("sizeof tokens %zu\n", sizeof(tokens[0]));
 			// execute_command(line, envp);
 		}
 		free(line);

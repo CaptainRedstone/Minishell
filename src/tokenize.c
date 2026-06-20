@@ -65,16 +65,16 @@ void	print_tokens(const t_token *tokens)
 	}
 }
 
-int	tokenize(char *line, t_token **pt_tokens)
+int	tokenize(char *line, t_token *tokens[])
 {
 	const char	**arr;
 
 	if (!line)
 		return (0);
 	arr = (const char **)ft_split(line, ' ');
-	pt_tokens = malloc((count_tokens(arr) + 1) * sizeof(t_token));
-	if (!fill_tokens(*pt_tokens, arr))
-		return (free(*pt_tokens), 0);
-	print_tokens(*pt_tokens);
+	tokens[0] = malloc((count_tokens(arr) + 1) * sizeof(t_token));
+	if (!fill_tokens(tokens[0], arr))
+		return (free(tokens[0]), 0);
+	print_tokens(tokens[0]);
 	return (1);
 }
