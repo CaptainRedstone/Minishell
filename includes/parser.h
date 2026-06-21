@@ -13,22 +13,12 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-typedef struct s_token		t_token;
 typedef struct s_node		t_node;
 typedef struct s_node_cmd	t_node_cmd;
 typedef struct s_node_pipe	t_node_pipe;
 typedef struct s_node_redir	t_node_redir;
 typedef struct s_node_sub	t_node_sub;
 typedef struct s_context		t_context;
-
-/**
- * @class token 
- */
-struct s_token
-{
-	char	*val;
-	int		type;
-};
 
 struct s_node_cmd
 {
