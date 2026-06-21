@@ -21,7 +21,11 @@ typedef struct s_node_cmd	t_node_cmd;
 typedef struct s_node_pipe	t_node_pipe;
 typedef struct s_node_redir	t_node_redir;
 typedef struct s_node_sub	t_node_sub;
+typedef struct s_context		t_context;
 
+/**
+ * @class token 
+ */
 struct s_token
 {
 	char	*val;
@@ -67,16 +71,27 @@ struct s_node
 	t_node_gen	node;
 };
 
+struct s_context
+{
+	char	*line;
+	char	*prompt;
+	t_token	*tokens;
+	int		tk_count;
+};
+
 enum e_token_type
 {
 	e_null,
 	e_word,
 	e_pipe,
-	e_single_quote,
-	e_double_quote,
+	e_quote,
+	e_dquote,
 	e_right_redir,
 	e_left_redir,
-	e_paranthesis,
+	e_append_redir,
+	e_heredoc,
+	e_lparen,
+	e_rparen,
 };
 
 enum e_node_type
@@ -93,32 +108,43 @@ enum e_node_type
  * @param arr array of strings with raw tokens
  * @return number of tokens
  */
-int	count_tokens(const char **arr);
+int		count_tokens(char **arr);
+
+/**
+ * @brief Free memory allocation of tokens
+ * 
+ * @param ctx context with following field
+ * @param tokens list of tokens
+ */
+void	free_tokens(t_context *ctx);
+
+/**
+ * @brief Print tokens in received order
+ * 
+ * @param ctx context with following field
+ * @param tokens list of tokens
+ */
+void	print_tokens(t_context *ctx);
 
 /**
  * @brief Fill token list from split string array
  * 
- * @param tk empty list of tokens to be filled
  * @param arr split string array with raw tokens
+ * @param ctx context with following field
+ * @param tokens empty list of tokens to be filled
  * 
  * @return 1 on success, else 0
  */
-int	fill_tokens(t_token *tokens, const char **arr);
+int		fill_tokens(t_context *ctx, char **arr);
 
 /**
- * @brief Print tokens in order
+ * @brief	Split input line string into list of tokens for further parsing
  * 
- * @param tokens token list
- */
-void	print_tokens(const t_token *tokens);
-
-/**
- * @brief	Split input string into list of tokens for further parsing
- * 
+ * @param ctx context with following fields
  * @param line raw string of input commands
- * @param pt_tokens address of token list to fill
+ * @param tokens list of tokens to fill from line
  * @return 1 on success, else 0
  */
-int	tokenize(char *line, t_token **pt_tokens);
+int		tokenize(t_context *ctx);
 
 #endif

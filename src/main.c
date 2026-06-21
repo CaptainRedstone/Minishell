@@ -5,35 +5,34 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*line;
-	char	*prompt;
-	t_token	*tokens[1];
+	t_context ctx;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	print_welcome();
 	create_signal();
+	ft_bzero(&ctx, sizeof(t_context));
 	while (1)
 	{
-		prompt = build_prompt();
-		line = readline(prompt);
-		if (!line)
+		ctx.prompt = build_prompt();
+		ctx.line = readline(ctx.prompt);
+		if (!(ctx.line))
 		{
-			free(prompt);
+			free(ctx.prompt);
 			break ;
 		}
-		if (*line)
-			add_history(line);
-		if (ft_strlen(line) > 0)
+		if (*(ctx.line))
+			add_history(ctx.line);
+		if (ft_strlen(ctx.line) > 0)
 		{
-			tokenize(line, tokens);
-			print_tokens(tokens[0]);
-			printf("sizeof tokens %zu\n", sizeof(tokens[0]));
+			printf("ok\n");
+			tokenize(&ctx);
+			print_tokens(&ctx);
 			// execute_command(line, envp);
 		}
-		free(line);
-		free(prompt);
+		free(ctx.line);
+		free(ctx.prompt);
 	}
 	return (0);
 }

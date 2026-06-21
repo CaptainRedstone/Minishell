@@ -558,9 +558,14 @@ Ressources use for minshell project
 - (ascii art)[https://www.asciiart.eu/text-to-ascii-art#google_vignette]
 - (Makefile cheat sheet)[https://gist.github.com/evertrol/4b6fd05f3b6be2b331c60638b1af7101]
 
+### grind
+valgrind --leak-check=full --track-fds=yes --show-leak-kinds=all --suppressions=ignore_readline_leaks.supp ./minishell
+
+
 # AI Tools
 
 Due to the lack of understanding regarding some parts of the shell functions, Claude and Copilote were a good help in the comprehension of the AST, readline library, signals, some build-in and debugging.
+
 
 # Special thanks
 Thanks to our colleagues for their advices and inputs to crash our minishell and makes it better. Thanks to Garance, Théo, Max, Thijs, Cédric and the others.
