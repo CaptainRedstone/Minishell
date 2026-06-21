@@ -6,14 +6,12 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/09 15:18:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/20 16:07:20 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/06/21 20:29:32 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
-
-# include "minishell.h"
 
 typedef struct s_token		t_token;
 typedef struct s_node		t_node;
