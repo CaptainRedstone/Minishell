@@ -3,36 +3,45 @@
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 
+void	free_context(t_context *ct, int flag)
+{
+	if ((e_ct_all | e_ct_line) & flag)
+		free(ct->line);
+	if ((e_ct_all | e_ct_prompt) & flag)
+		free(ct->prompt);
+	if ((e_ct_all | e_ct_tokens) & flag)
+		free_tokens(ct);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
-	t_context ctx;
+	t_context ct;
 
 	(void)argc;
 	(void)argv;
 	(void)envp;
 	print_welcome();
 	create_signal();
-	ft_bzero(&ctx, sizeof(t_context));
+	ft_bzero(&ct, sizeof(t_context));
 	while (1)
 	{
-		ctx.prompt = build_prompt();
-		ctx.line = readline(ctx.prompt);
-		if (!(ctx.line))
+		ct.prompt = build_prompt();
+		ct.line = readline(ct.prompt);
+		if (!(ct.line))
 		{
-			free(ctx.prompt);
+			free(ct.prompt);
 			break ;
 		}
-		if (*(ctx.line))
-			add_history(ctx.line);
-		if (ft_strlen(ctx.line) > 0)
+		if (*(ct.line))
+			add_history(ct.line);
+		if (ft_strlen(ct.line) > 0)
 		{
 			printf("ok\n");
-			tokenize(&ctx);
-			print_tokens(&ctx);
+			tokenize(&ct);
+			print_tokens(&ct);
 			// execute_command(line, envp);
 		}
-		free(ctx.line);
-		free(ctx.prompt);
+		free_context(&ct, e_ct_all);
 	}
 	return (0);
 }

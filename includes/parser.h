@@ -102,6 +102,15 @@ enum e_node_type
 	e_node_redir,
 };
 
+enum e_context_flag
+{
+	e_ct_all = 1 << 0,
+	e_ct_line = 1 << 1,
+	e_ct_prompt = 1 << 2,
+	e_ct_tokens = 1 << 3,
+	e_ct_ast = 1 << 4,
+};
+
 /**
  * @brief Count number of tokens in array
  * 
