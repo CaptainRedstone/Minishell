@@ -53,7 +53,7 @@ $(OBJ_DIR):
 # Build libraries
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) -C $(LIBFT_DIR) bonus
 
 # ------------------------------------------------------------------------------
 
