@@ -3,22 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/09 15:18:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/21 20:29:32 by aforcada         ###   ########.fr       */
+/*   Created: 2026/07/13 16:34:31 by ethrober          #+#    #+#             */
+/*   Updated: 2026/07/13 16:36:34 by ethrober         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
 
+# include "tokenize.h"
+
 typedef struct s_node		t_node;
 typedef struct s_node_cmd	t_node_cmd;
 typedef struct s_node_pipe	t_node_pipe;
 typedef struct s_node_redir	t_node_redir;
 typedef struct s_node_sub	t_node_sub;
-typedef struct s_context		t_context;
+typedef struct s_context	t_context;
 
 struct s_node_cmd
 {
