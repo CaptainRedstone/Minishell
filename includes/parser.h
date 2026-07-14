@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 16:34:31 by ethrober          #+#    #+#             */
-/*   Updated: 2026/07/13 16:36:34 by ethrober         ###   ########.ch       */
+/*   Updated: 2026/07/14 11:49:57 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,90 +16,15 @@
 # include "tokenize.h"
 
 typedef struct s_node		t_node;
-typedef struct s_node_cmd	t_node_cmd;
-typedef struct s_node_pipe	t_node_pipe;
-typedef struct s_node_redir	t_node_redir;
-typedef struct s_node_sub	t_node_sub;
-typedef struct s_context	t_context;
 
-struct s_node_cmd
+struct s_cmd
 {
-	char	**args;
-};
-
-struct s_node_pipe
-{
-	t_node	*left;
-	t_node	*right;
-};
-
-struct s_node_redir
-{
-	char	*path;
 	int		fd;
+	char	*path;
 	int		mode;
-	t_node	*cmd;
+	char	*args;
 };
 
-struct s_node_sub
-{
-	t_node	*parent;
-	t_node	*child;
-};
-
-typedef union u_node
-{
-	t_node_cmd		cmd;
-	t_node_pipe		pipe;
-	t_node_redir	redir;
-	t_node_sub		sub;
-}	t_node_gen;
-
-struct s_node
-{
-	int			type;
-	t_node_gen	node;
-};
-
-struct s_context
-{
-	char	*line;
-	char	*prompt;
-	t_token	*tokens;
-	int		tk_count;
-};
-
-enum e_token_type
-{
-	e_null,
-	e_word,
-	e_pipe,
-	e_quote,
-	e_dquote,
-	e_right_redir,
-	e_left_redir,
-	e_append_redir,
-	e_heredoc,
-	e_lparen,
-	e_rparen,
-};
-
-enum e_node_type
-{
-	e_node_null,
-	e_node_cmd,
-	e_node_pipe,
-	e_node_redir,
-};
-
-enum e_context_flag
-{
-	e_ct_all = 1 << 0,
-	e_ct_line = 1 << 1,
-	e_ct_prompt = 1 << 2,
-	e_ct_tokens = 1 << 3,
-	e_ct_ast = 1 << 4,
-};
 
 /**
  * @brief Count number of tokens in array

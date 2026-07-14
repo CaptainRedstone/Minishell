@@ -1,6 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+typedef struct s_context	t_context;
 
 typedef struct s_command
 {
@@ -9,6 +10,15 @@ typedef struct s_command
 	char	*command_line;
 	char	**commands;
 }			t_command;
+
+struct s_context
+{
+	char	*line;
+	size_t	line_len;
+	char	*prompt;
+	t_list	*token_lst;
+	int		token_count;
+};
 
 void		print_welcome(void);
 
@@ -24,7 +34,6 @@ char		*get_input(char *line, char *pos_i);
 void		execute_command(char *line, char **envp);
 t_command	parse_command(char *line, t_command command);
 t_command	parse_input_output(char *line, t_command command);
-void		handle_quote(char *line, char *dest, int *i, int *j);
 
 /* void		ft_cd(t_command command);
 void		ft_env(t_command command, char **envp);

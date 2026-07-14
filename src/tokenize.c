@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/06/20 16:09:24 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/07/14 14:20:58 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,85 +15,61 @@
 #include "../includes/minishell.h"
 #include "../includes/parser.h"
 
-int	count_tokens(char **arr)
+void	append_token(t_context *ctx, int tk_start, int tk_end, int tk_type)
 {
-	int	count;
+	t_token	*tk;
+	t_list	*new;
 
-	count = 0;
-	if (!arr)
-		return (count);
-	while(arr[count])
-		count++;
-	return (count);
+	tk = ft_calloc(1, sizeof(t_token));
+	if (!tk || tk_end <= tk_start)
+		return ;
+	tk->type = tk_type;
+	tk->val = ft_substr(ctx->line, tk_start, (tk_end - tk_start + 1));
+	new = ft_lstnew(tk);
+	if (!new)
+		free(tk);
+	else
+	{
+		if (!(ctx->token_lst))
+			ft_lstadd_back(&(ctx->token_lst), new);
+	}
 }
 
-void	free_tokens(t_context *ctx)
+int	handle_quote(t_context *ctx, int quote_idx)
 {
 	int	i;
 
-	i = 0;
-	while (i < ctx->tk_count)
+	if (!ctx || !(ctx->line))
+		return (-1);
+	i = 1;
+	while (i + quote_idx < ctx->line_len)
 	{
-		free(ctx->tokens[i].val);
-		ctx->tokens[i].val = NULL;
+		if (ctx->line[i + quote_idx] == e_tk_quote)
+			break ;
 		i++;
 	}
-	free(ctx->tokens);
-	ctx->tokens = NULL;
-	ctx->tk_count = 0;
-}
+	if (i + quote_idx < ctx->line_len)
 
-void	print_tokens(t_context *ctx)
-{
-	int		i;
-
-	i = 0;
-	while (i < ctx->tk_count)
-	{
-		printf("token[%d]: %s\n", i, ctx->tokens[i].val);
-		i++;
-	}
-}
-
-int	fill_tokens(t_context *ctx, char **arr)
-{
-	int		i;
-
-	i = 0;
-	while (i < ctx->tk_count)
-	{
-		if (ft_strncmp(arr[i], "|", 2))
-			ctx->tokens[i].type = e_pipe;
-		else if (ft_strncmp(arr[i], ">", 2))
-			ctx->tokens[i].type = e_right_redir;
-		else if (ft_strncmp(arr[i], "<", 2))
-			ctx->tokens[i].type = e_left_redir;
-		else if (ft_strncmp(arr[i], ">>", 3))
-			ctx->tokens[i].type = e_append_redir;
-		else if (ft_strncmp(arr[i], "<<", 3))
-			ctx->tokens[i].type = e_heredoc;
-		else
-			ctx->tokens[i].type = e_word;
-		ctx->tokens[i].val = ft_strdup(arr[i]);
-		i++;
-	}
-	return (1);
+	return (-1);
 }
 
 int	tokenize(t_context *ctx)
 {
-	char	**arr;
+	int	i;
+	int	step;
 
-	arr = ft_split(ctx->line, ' ');
-	if (!arr)
+	if (!ctx || !(ctx->line))
 		return (0);
-	ctx->tk_count = count_tokens(arr);
-	if (ctx->tk_count < 1)
-		return (free_array(arr), 0);
-	ctx->tokens = malloc(ctx->tk_count * sizeof(t_token));
-	if (!(ctx->tokens))
-		return (free_array(arr), 0);
-	if (!fill_tokens(ctx, arr))
-		return (free_array(arr), 0);
-	return (free_array(arr), 1);
+	i = 0;
+	while (i < ctx->line_len)
+	{
+		step = 0;
+		if (ctx->line[i] == e_tk_quote)
+			step = handle_quote(ctx, i);
+		if (ctx->line[i] == e_tk_dquote)
+			step = handle_dquote(ctx, i);
+		if (ctx->line[i] == e_tk_r_redir || ctx->line[i] == e_tk_l_redir)
+			step = 1;
+		i += step;
+	}
 }
