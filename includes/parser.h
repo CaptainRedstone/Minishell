@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/13 16:34:31 by ethrober          #+#    #+#             */
-/*   Updated: 2026/07/14 11:49:57 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/07/14 18:40:32 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,9 @@ void	print_tokens(t_context *ctx);
 int		fill_tokens(t_context *ctx, char **arr);
 
 /**
- * @brief	Split input line string into list of tokens for further parsing
+ * @brief	Fills token list and count in context from line.
  * 
- * @param ctx context with following fields
- * @param line raw string of input commands
- * @param tokens list of tokens to fill from line
- * @return 1 on success, else 0
+ * @param ctx[t_context*] Context with various placeholders, line is assigned
  */
 int		tokenize(t_context *ctx);
 

@@ -1,8 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-typedef struct s_context	t_context;
-
 typedef struct s_command
 {
 	char	*input;
@@ -11,14 +9,23 @@ typedef struct s_command
 	char	**commands;
 }			t_command;
 
-struct s_context
+/**
+ * @brief	Context structure
+ * 
+ * @param	prompt[char*]		string prompt before input
+ * @param	line[char*]			output of `readline(prompt)` 
+ * @param	line_len[size_t]	length of `line`
+ * @param	token_lst[t_list*]	list of tokens, see `t_token`
+ * @param	token_cnt[int]		number of elements in `token_lst`
+ */
+typedef struct s_context
 {
+	char	*prompt;
 	char	*line;
 	size_t	line_len;
-	char	*prompt;
 	t_list	*token_lst;
-	int		token_count;
-};
+	int		token_cnt;
+}	t_context;
 
 void		print_welcome(void);
 
