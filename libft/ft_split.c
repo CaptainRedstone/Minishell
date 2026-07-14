@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/08 11:45:57 by ethrober          #+#    #+#             */
-/*   Updated: 2025/10/20 11:58:04 by ethrober         ###   ########.fr       */
+/*   Updated: 2026/07/14 01:10:11 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char	**ft_split(char const *str, char c)
 			while (*str)
 			{
 				array[arr_i] = malloc(len_word(str, c) + 1);
-				if (array)
+				if (array[arr_i])
 					str += fill_word(array[arr_i++], str, c);
 				else
 				{
