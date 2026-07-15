@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/07/15 16:49:37 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/07/15 17:04:27 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ int	tk_len(t_context *ctx, int start, const char *stop_set)
 	t_list	*node;
 
 	len = 0;
+	if (chr_in_set(ctx->line[start], "\'\""))
+		len++;
 	while(start + (size_t)len < ctx->line_len)
 	{
 		if (chr_in_set(ctx->line[start + len], stop_set))
@@ -78,10 +80,10 @@ int tk_append(t_context *ctx, int start, int len, int type)
 
 int	tokenize(t_context *ctx)
 {
-	static char	**stop_sets;
-	int			set_i;
+	static char	**sets = {"\'", "\"", "|<>", NULL};
 	int			i;
 	int			len;
+	int			s;
 
 	if (!ctx || !(ctx->line) || !(ctx->line_len))
 		return (0);
@@ -89,16 +91,17 @@ int	tokenize(t_context *ctx)
 	while ((size_t)i < ctx->line_len)
 	{
 		len = 0;
-		type = ctx->line[i];
-		stop_sets = (char **){"\'", "\"", "|<>", NULL};
-		while (*stop_sets)
+		s = 0;
+		while (sets[s])
 		{
-			len = tk_len(ctx, i, *stop_sets);
-			stop_sets++;
+			len = tk_len(ctx, i, sets[s]);
+			if (len && tk_append(ctx, i, len, ctx->line[i]))
+				i += len;
+			s++;
 		}
-		if (!chr_in_set(type, "\'\"|<>"))
+		if (!chr_in_set(ctx->line[i], "\'\"|<>"))
 			len = tk_len(ctx, i, "\'\"|<>");
-		if (len && tk_append(ctx, i, len, type))
+		if (len && tk_append(ctx, i, len, ctx->line[i]))
 			i += len;
 		else
 			return (0);
