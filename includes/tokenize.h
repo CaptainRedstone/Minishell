@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/21 20:28:47 by aforcada          #+#    #+#             */
-/*   Updated: 2026/07/14 18:40:28 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/07/15 14:23:34 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,16 @@ typedef struct s_token
 {
 	int		type;
 	char	*val;
+	size_t	len;
 }	t_token;
 
 enum e_token_type
 {
 	e_tk_null = '\0',
-	e_tk_cmd = 1,
+	e_tk_word = 1,
 	e_tk_pipe = '|',
-	e_tk_quote = 39,
-	e_tk_dquote = '"',
+	e_tk_quote = '\'',
+	e_tk_dquote = '\"',
 	e_tk_r_redir = '>',
 	e_tk_l_redir = '<',
 	e_tk_append_redir,
