@@ -19,7 +19,7 @@ typedef struct s_token
 	size_t	len;
 }	t_token;
 
-enum e_token_type
+typedef enum t_tk_type
 {
 	e_tk_null = '\0',
 	e_tk_word = 1,
@@ -28,30 +28,31 @@ enum e_token_type
 	e_tk_dquote = '\"',
 	e_tk_r_redir = '>',
 	e_tk_l_redir = '<',
-	e_tk_append_redir,
-	e_tk_heredoc,
+	e_tk_append_redir = 2,
+	e_tk_heredoc = 3,
 };
 
 /**
- * @brief	Extract token from input line (ctx->line)
+ * @brief	Extract token from input line (ctx->line) and copies its
+ * content and metadata (type + length) at the end of  the token list
+ * (ctx->token_lst)
  * 
- * @param	ctx[t_context]	Context with various placeholders, notably line
- * @param	tk_start[int] 	Start index of token in line. 
- * @param	tk_end[size_t]	End index of token in line
- * @param	tk_type[int]	Type of token
+ * @param	ctx		Context with various placeholders, notably line
+ * @param	start	Start index of token in line. 
+ * @param	len		End index of token in line
+ * @param	type	Type of token
  * 
- * @return	`t_list` node with newly extracted token see `t_token` else `NULL`
+ * @return	1 is success, 0 is failure
  */
-t_list	*extract_token(t_context *ctx,
-			int tk_start, size_t tk_end, int tk_type);
+int	tk_extract(t_context *ctx, int start, size_t len, int type);
+
 /**
- * @brief	Retrieve string between quotes and adds it to token list in 
- * context (ctx->token_lst)
+ * @brief	Compute len of token in ctx->line from start to char in stop_set
  * 
- * @param	ctx[t_context]	Context with placeholders. See `token_lst`, `line`
- * @param	qi[int]			First quote index in line
- * @param	qtype[int]		Decimal value of quote or dquote in ascii
+ * @param	ctx			Context with placeholders, notably `line` and `line_len`
+ * @param	start		Start index in `line`
+ * @param	stop_set	Set of chars, each represents the end of a token
  * 
- * @return	`int` len of retrieved string else `-1`
+ * @return	Length of token
  */
-int		handle_quote(t_context *ctx, int qi, int qtype);
+int		tk_len(t_context *ctx, int start, const char *stop_set);
