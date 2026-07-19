@@ -36,7 +36,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 	}
 	return (head);
 }
-/* PREVIOUS VERSION MEMORY LEAKS...
+/* PREVIOUS VERSION HAD MEMORY LEAKS...
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
 	t_list	*first;

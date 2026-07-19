@@ -29,20 +29,19 @@ static int	chr_in_set(int c, const char *set)
 	return (0);
 }
 
-int	tk_extract(t_context *ctx,
-	int start, size_t len, int type)
+int	tk_extract(t_context *ctx, int start, size_t len, int type)
 {
 	t_token	*tk;
 	t_list	*node;
 
 	tk = ft_calloc(1, sizeof(t_token));
 	if (!tk || !len || ctx->line_len < start + len)
-		return (free(tk), NULL);
+		return (free(tk), 0);
 	tk->type = type;
 	tk->val = ft_substr(ctx->line, start, len);
 	tk->len = len;
 	if (!(tk->val))
-		return (free(tk), NULL);
+		return (free(tk), 0);
 	node = ft_lstnew(tk);
 	if (!node)
 		return (free(tk->val), free(tk), 0);
@@ -58,7 +57,7 @@ int	tk_len(t_context *ctx, int start, const char *stop_set)
 	len = 0;
 	if (chr_in_set(ctx->line[start], "\'\""))
 		len++;
-	while(start + (size_t)len < ctx->line_len)
+	while (start + (size_t)len < ctx->line_len)
 	{
 		if (chr_in_set(ctx->line[start + len], stop_set))
 			return (len + 1);
@@ -69,16 +68,22 @@ int	tk_len(t_context *ctx, int start, const char *stop_set)
 	return (0);
 }
 
+int	tk_print(t_list *tk_lst)
+{
+	t_token	*tk;
+
+	ft_bzero(tk, sizeof(t_token));
+	
+}
+
 int	tokenize(t_context *ctx)
 {
 	int		i;
 	int		len;
-	t_list	*node;
 
 	if (!ctx || !(ctx->line) || !(ctx->line_len))
 		return (0);
 	i = 0;
-	node = NULL;
 	while ((size_t)i < ctx->line_len)
 	{
 		if (!chr_in_set(ctx->line[i], "\'\"|<>"))
@@ -87,8 +92,7 @@ int	tokenize(t_context *ctx)
 			len = tk_len(ctx, i, "\'")
 				+ tk_len(ctx, i, "\"")
 				+ tk_len(ctx, i, "|<>");
-		node = tk_extract(ctx, i, len, );
-		if (len && tk_append(ctx, i, len, ctx->line[i]))
+		if (len && tk_extract(ctx, i, len, ctx->line[i]))
 			i += len;
 		i++;
 	}

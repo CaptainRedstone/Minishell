@@ -16,7 +16,7 @@ typedef struct s_command
  * @param	line[char*]			output of `readline(prompt)` 
  * @param	line_len[size_t]	length of `line`
  * @param	token_lst[t_list*]	list of tokens, see `t_token`
- * @param	token_cnt[int]		number of elements in `token_lst`
+ * @param	token_cnt[int]		number of tokens in `token_lst`
  */
 typedef struct s_context
 {

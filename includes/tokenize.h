@@ -19,16 +19,16 @@ typedef struct s_token
 	size_t	len;
 }	t_token;
 
-typedef enum t_tk_type
+enum e_tk_type
 {
 	e_tk_null = '\0',
 	e_tk_word = 1,
 	e_tk_pipe = '|',
 	e_tk_quote = '\'',
 	e_tk_dquote = '\"',
-	e_tk_r_redir = '>',
-	e_tk_l_redir = '<',
-	e_tk_append_redir = 2,
+	e_tk_redir_out = '>',
+	e_tk_redir_in = '<',
+	e_tk_appen = 2,
 	e_tk_heredoc = 3,
 };
 
