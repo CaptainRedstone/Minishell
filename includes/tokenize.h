@@ -28,7 +28,7 @@ enum e_tk_type
 	e_tk_dquote = '\"',
 	e_tk_redir_out = '>',
 	e_tk_redir_in = '<',
-	e_tk_appen = 2,
+	e_tk_append = 2,
 	e_tk_heredoc = 3,
 };
 

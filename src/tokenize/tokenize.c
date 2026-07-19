@@ -68,31 +68,79 @@ int	tk_len(t_context *ctx, int start, const char *stop_set)
 	return (0);
 }
 
-int	tk_print(t_list *tk_lst)
+int	chr_to_tk_type(int c)
+{
+	if (chr_in_set(c, "\'\"|<>"))
+	{
+		return (c);
+	}
+	else
+	{
+		if (ft_isprint(c))
+			return (e_tk_word);
+		return (e_tk_null);
+	}
+}
+
+char	*tk_typename(int type)
+{
+	if (type == e_tk_null)
+		return ("null");
+	if (type == e_tk_word)
+		return ("word");
+	if (type == e_tk_pipe)
+		return ("pipe");
+	if (type == e_tk_quote)
+		return ("quote");
+	if (type == e_tk_dquote)
+		return ("dquote");
+	if (type == e_tk_redir_in)
+		return ("redir_in");
+	if (type == e_tk_redir_out)
+		return ("redir_out");
+	if (type == e_tk_append)
+		return ("append");
+	if (type == e_tk_heredoc)
+		return ("heredoc");
+	return (NULL);
+}
+
+void	tk_print(void *content)
 {
 	t_token	*tk;
 
-	ft_bzero(tk, sizeof(t_token));
-	
+	if (content)
+	{
+		tk = content;
+		ft_putstr_fd("token[", STDOUT_FILENO);
+		ft_putstr_fd(tk_typename(tk->type), STDOUT_FILENO);
+		ft_putstr_fd("]:", STDOUT_FILENO);
+		ft_putstr_fd(tk->val, STDOUT_FILENO);
+		ft_putstr_fd("(", STDOUT_FILENO);
+		ft_putnbr_fd(tk->len, STDOUT_FILENO);
+		ft_putstr_fd(")\n", STDOUT_FILENO);
+	}
 }
 
 int	tokenize(t_context *ctx)
 {
-	int		i;
-	int		len;
+	int	i;
+	int	len;
+	int	type;
 
 	if (!ctx || !(ctx->line) || !(ctx->line_len))
 		return (0);
 	i = 0;
 	while ((size_t)i < ctx->line_len)
 	{
-		if (!chr_in_set(ctx->line[i], "\'\"|<>"))
+		type = chr_to_tk_type(ctx->line[i]);
+		if (type == e_tk_word)
 			len = tk_len(ctx, i, "\'\"|<>");
 		else
 			len = tk_len(ctx, i, "\'")
 				+ tk_len(ctx, i, "\"")
 				+ tk_len(ctx, i, "|<>");
-		if (len && tk_extract(ctx, i, len, ctx->line[i]))
+		if (len && tk_extract(ctx, i, (size_t)len, type))
 			i += len;
 		i++;
 	}
