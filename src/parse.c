@@ -14,9 +14,3 @@ t_token	*parse_token(char *line)
 	(void)line;
 	return (NULL);
 }
-
-t_node	*parse_node(char *line, t_node *head)
-{
-	(void)line;
-	return (head);
-}

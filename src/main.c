@@ -24,11 +24,11 @@ int	main(int argc, char **argv, char **envp)
 		}
 		if (*(ct.line))
 			add_history(ct.line);
-		if (ft_strlen(ct.line) > 0)
+		ct.line_len = ft_strlen(ct.line);
+		if (ct.line_len > 0)
 		{
-			printf("ok\n");
 			tokenize(&ct);
-			print_tokens(&ct);
+			ft_lstiter(ct.token_lst, tk_print);
 			// execute_command(line, envp);
 		}
 	}

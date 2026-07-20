@@ -55,4 +55,22 @@ int	tk_extract(t_context *ctx, int start, size_t len, int type);
  * 
  * @return	Length of token
  */
-int		tk_len(t_context *ctx, int start, const char *stop_set);
+int	tk_len(t_context *ctx, int start, int type, const char *stop_set);
+
+/**
+ * @brief Return the name of token type
+ * 
+ * @param type token type, see `e_tk_type`
+ */
+char	*tk_typename(int type);
+
+/**
+ * @brief Print token to stdout
+ */
+void	tk_print(void *content);
+
+/**
+ * @brief Assuming ctx->line isn't empty, tokenize line into a list of 
+ * tokens ctx->token_lst then return 1 on success and 0 on failure.
+ */
+int		tokenize(t_context *ctx);

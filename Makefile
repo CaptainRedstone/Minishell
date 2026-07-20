@@ -23,7 +23,7 @@ SRCS        = $(SRC_DIR)/main.c \
 				$(SRC_DIR)/execute.c \
 				$(SRC_DIR)/executable.c \
 				$(SRC_DIR)/parse_utils.c \
-				$(SRC_DIR)/tokenize/tokenize.c \
+				$(SRC_DIR)/tokenize.c \
 
 # Object files
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

@@ -17,14 +17,13 @@
 
 static int	chr_in_set(int c, const char *set)
 {
-	size_t	i;
-
-	i = 0;
-	while (set[i])
+	if (!set)
+		return (0);
+	while (*set)
 	{
-		if (set[i] == c)
+		if ((int)(*set) == c)
 			return (1);
-		i++;
+		set++;
 	}
 	return (0);
 }
@@ -50,22 +49,24 @@ int	tk_extract(t_context *ctx, int start, size_t len, int type)
 	return (1);
 }
 
-int	tk_len(t_context *ctx, int start, const char *stop_set)
+int	tk_len(t_context *ctx, int start, int type, const char *stop_set)
 {
 	int		len;
 
 	len = 0;
-	if (chr_in_set(ctx->line[start], "\'\""))
+	if (chr_in_set(type, "\'\""))
 		len++;
 	while (start + (size_t)len < ctx->line_len)
 	{
 		if (chr_in_set(ctx->line[start + len], stop_set))
-			return (len + 1);
+		{
+			if (chr_in_set(type, "\'\""))
+				return (len + 1);
+			return (len);
+		}
 		len++;
 	}
-	if (start + (size_t)len == ctx->line_len)
-		return (len);
-	return (0);
+	return (len);
 }
 
 int	chr_to_tk_type(int c)
@@ -113,7 +114,7 @@ void	tk_print(void *content)
 	{
 		tk = content;
 		ft_putstr_fd("token[", STDOUT_FILENO);
-		ft_putstr_fd(tk_typename(tk->type), STDOUT_FILENO);
+		ft_putnbr_fd(tk->type, STDOUT_FILENO);
 		ft_putstr_fd("]:", STDOUT_FILENO);
 		ft_putstr_fd(tk->val, STDOUT_FILENO);
 		ft_putstr_fd("(", STDOUT_FILENO);
@@ -134,15 +135,14 @@ int	tokenize(t_context *ctx)
 	while ((size_t)i < ctx->line_len)
 	{
 		type = chr_to_tk_type(ctx->line[i]);
-		if (type == e_tk_word)
-			len = tk_len(ctx, i, "\'\"|<>");
-		else
-			len = tk_len(ctx, i, "\'")
-				+ tk_len(ctx, i, "\"")
-				+ tk_len(ctx, i, "|<>");
-		if (len && tk_extract(ctx, i, (size_t)len, type))
-			i += len;
-		i++;
+		printf("tk val:%c, type:%i, name:%s\nis a word? %i\n",
+			ctx->line[i],
+			type,
+			tk_typename(type),
+			type == e_tk_word);
+		len = tk_len(ctx, i, type, "\'\"|<>");
+		tk_extract(ctx, i, (size_t)len, type);
+		i = i + len;
 	}
 	return (1);
 }
