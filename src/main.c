@@ -28,7 +28,7 @@ int	main(int argc, char **argv, char **envp)
 		if (ct.line_len > 0)
 		{
 			tokenize(&ct);
-			ft_lstiter(ct.token_lst, tk_print);
+			ft_lstiter(ct.token_lst, &tk_print);
 			// execute_command(line, envp);
 		}
 	}

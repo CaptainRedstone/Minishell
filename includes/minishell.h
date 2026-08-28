@@ -1,6 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "../includes/includes.h"
+
 typedef struct s_command
 {
 	char	*input;
