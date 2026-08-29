@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/21 20:28:47 by aforcada          #+#    #+#             */
-/*   Updated: 2026/08/28 18:24:57 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/08/28 18:37:54 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "../includes/minishell.h"
 
 # define TKZ_MAXITER 10000
-# define TKZ_METACHARS "\'\"|<>"
+# define TKZ_METACHARS " \t\'\"|<>"
 
 # define TK_NULL_NAME "TK_NULL"
 # define TK_BLANK_NAME "TK_BLANK"
