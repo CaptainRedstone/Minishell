@@ -6,49 +6,45 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/20 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/08/28 18:42:04 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/08/29 19:13:25 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/tokenize.h"
 
-// string functions
-size_t	strlen_if(const char *str, int (*cond)(char c))
+t_token	*build_token_at(char *line, size_t index)
 {
-	size_t	i;
+	t_token	*token;
 
-	i = 0;
-	while (i < TKZ_MAXITER && cond(str[i]))
-		i++;
-	return (i);
+	token = ft_calloc(1, sizeof(t_token));
+	if (!token)
+		return (NULL);
+	token->type = get_token_type(line[index]);
+	token->pos = index;
+	token->len = token_len(&line[index], token->type);
+	return (token);
 }
 
-int	is_blank(char c)
-{
-	if (c == TK_SPACE_VAL)
-		return (1);
-	if (c == TK_TAB_VAL)
-		return (1);
-	return (0);
-}
-
-// token related
-void	tk_print(void *content)
-{
-	(void)content;
-	printf("je suis un token ma gueule\n");
-}
-
-// tokenize related
 int	tokenize(t_context *ctx)
 {
-	t_tokenizer	tkz;
+	size_t	index;
+	t_token	*token;
+	t_list	*node;
 
-	ft_bzero(&tkz, sizeof(t_tokenizer));
-	while (tkz.read_pos < ctx->line_len)
+	index = 0;
+	while (index < ctx->line_len)
 	{
-		tkz.read_pos++;
+		token = build_token_at(ctx->line, index);
+		if (!token)
+			return (0);
+		node = ft_lstnew((void *)token);
+		if (!(ctx->token_lst))
+			ctx->token_lst = node;
+		else
+			ft_lstadd_back(&(ctx->token_lst), node);
+		if (!(token->len))
+			break ;
+		index += token->len;
 	}
-	printf("done\n");
 	return (0);
 }
