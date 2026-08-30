@@ -52,6 +52,8 @@
 # define TK_REDIR_OUT_NAME "TK_REDIR_OUT"
 # define TK_REDIR_OUT_VAL '>'
 # define TK_WORD_NAME "TK_WORD"
+# define TK_REDIR_HEREDOC_NAME "TK_REDIR_HEREDOC"
+# define TK_REDIR_APPEND_NAME "TK_REDIR_APPEND"
 # define TK_METACHARS " \t\'\"|<>"
 // ======================================================== //
 //						DEPENDENCIES						//
@@ -69,12 +71,15 @@
 // ======================================================== //
 //						STRUCTURES							//
 // ======================================================== //
-// TODO: update t_commmand
-// TODO: add t_redir, t_word, t_token_type & t_word_flags
+// TODO: remove t_commmand
+// TODO: add t_redir, t_word, perhaps t_token_type & t_word_flags
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
 typedef struct s_command	t_command;
-
+typedef struct s_cmd		t_cmd;
+typedef struct s_word		t_word;
+typedef struct s_redir		t_redir;
+// to be removed
 struct s_command
 {
 	char	*input;
@@ -82,23 +87,29 @@ struct s_command
 	char	*command_line;
 	char	**commands;
 };
-
+// fourre tout
 struct s_context
 {
 	char	*prompt;
-	char	*line;
 	size_t	line_len;
-	t_list	*token_lst;
+	char	*line;
+	t_token	*current_token;
 	int		token_lst_len;
+	t_list	*token_lst;
+	int		redir_lst_len;
+	t_list	*redir_lst;
+	int		cmd_lst_len;
+	t_list	*cmd_lst;
+	int		envp_lst_len;
+	t_list	*envp_lst;
 };
-
+// token
 struct s_token
 {
 	int		type;
 	size_t	start;
 	size_t	len;
 };
-
 enum e_token_type
 {
 	TK_NULL,
@@ -107,9 +118,40 @@ enum e_token_type
 	TK_DQUOTE,
 	TK_PIPE,
 	TK_REDIR_IN,
+	TK_REDIR_HEREDOC,
 	TK_REDIR_OUT,
+	TK_REDIR_APPEND,
 	TK_WORD,
 	TK_END,
+};
+// word
+struct s_word
+{
+	char	*str;
+	int		flags;
+};
+enum e_word_flags
+{
+	W_NULL,
+	W_NAME = 1 << 0,
+	W_COMMAND = 1 << 1,
+	W_OPTION = 1 << 2,
+	W_PATH = 1 << 3,
+};
+// redir
+struct s_redir
+{
+	int		fd;
+	int		mode;
+	char	*fpath;
+};
+// cmd
+struct s_cmd
+{
+	int		words_count;
+	t_list	*words;
+	int		redirs_count;
+	t_list	*redirs;
 };
 
 void		print_welcome(void);

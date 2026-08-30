@@ -54,16 +54,18 @@ t_token	*build_token_at(char *line, size_t token_start)
 int	tokenize(t_context *ctx)
 {
 	size_t	idx;
-	t_token	*token;
 
 	idx = 0;
 	while (idx < ctx->line_len)
 	{
-		token = build_token_at(ctx->line, idx);
-		token_lst_add_back(ctx, token);
-		if (!token || token->len == 0)
+		ctx->current_token = build_token_at(ctx->line, idx);
+		if (!(ctx->current_token) || !(ctx->current_token->len))
 			break ;
-		idx += token->len;
+		if (ctx->current_token->type != TK_BLANK)
+			token_lst_add_back(ctx, ctx->current_token);
+		idx += ctx->current_token->len;
+		if (ctx->current_token->type == TK_BLANK)
+			free(ctx->current_token);
 	}
 	if (idx < ctx->line_len)
 		return (0);

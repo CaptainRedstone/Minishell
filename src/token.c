@@ -59,7 +59,7 @@ int	get_token_type(char c)
 }
 
 /**
- * @brief Print token to stdout
+ * @brief Print token
  */
 void	print_token(void *content)
 {
@@ -68,13 +68,10 @@ void	print_token(void *content)
 	token = content;
 	if (!token)
 		return ;
-	ft_putstr_fd(get_token_name(token->type), STDOUT_FILENO);
-	ft_putchar_fd('[', STDOUT_FILENO);
-	ft_putnbr_fd(token->start, STDOUT_FILENO);
-	ft_putchar_fd(':', STDOUT_FILENO);
-	ft_putnbr_fd(token->start + token->len - 1, STDOUT_FILENO);
-	ft_putchar_fd(']', STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	printf("%s[%lu:%lu]\n",
+		get_token_name(token->type),
+		token->start,
+		token->start + token->len - 1);
 }
 
 /**
