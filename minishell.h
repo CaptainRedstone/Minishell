@@ -5,7 +5,7 @@
 // ======================================================== //
 # define _XOPEN_SOURCE 600
 // colors
-// TODO: add prefix COL_
+// TODO: add prefix to color constants
 # define RESET      "\033[0m"
 # define BLACK      "\033[30m"
 # define RED        "\033[31m"
@@ -55,11 +55,14 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
 // ======================================================== //
 //						STRUCTURES							//
 // ======================================================== //
+
 // TODO: update t_commmand
 // TODO: add t_redir, t_word, t_token_type & t_word_flags
+
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
 typedef struct s_command	t_command;
@@ -133,6 +136,7 @@ void		free_array(char **array);
 void		free_struct(t_command command);
 
 void		print_command(t_command command);
+
 // ======================================================== //
 //						TOKENIZE							//
 // ======================================================== //
@@ -143,7 +147,7 @@ void		print_token(void *content);
 size_t		quote_len(char *quote_start, int quote_type);
 size_t		token_len(char *token_start, int token_type);
 // tokenize.c
-void		token_lst_add_back(t_list **token_lst, t_token *token);
+void		token_lst_add_back(t_context *ctx, t_token *token);
 t_token		*build_token_at(char *line, size_t token_start);
 int			tokenize(t_context *ctx);
 

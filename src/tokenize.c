@@ -15,17 +15,18 @@
 /**
  * @brief	Appends token to token list.
  */
-void	token_lst_add_back(t_list **token_lst, t_token *token)
+void	token_lst_add_back(t_context *ctx, t_token *token)
 {
 	t_list	*node;
 
-	if (!token_lst || !token)
+	if (!ctx || !token)
 		return ;
 	node = ft_lstnew((void *)token);
-	if ((*token_lst) == NULL)
-		*token_lst = node;
+	if (!(ctx->token_lst))
+		ctx->token_lst = node;
 	else
-		ft_lstadd_back(token_lst, node);
+		ft_lstadd_back(&(ctx->token_lst), node);
+	ctx->token_lst_len++;
 }
 
 /**
@@ -46,23 +47,25 @@ t_token	*build_token_at(char *line, size_t token_start)
 }
 
 /**
- * @brief Assumes context `ctx` has `line` and `line_len` initialized.
- * extract a list of tokens from line.
+ * @brief Assumes `ctx` has `line` and `line_len` initialized.
+ * Builds tokens from `line` and stores them in `ctx->token_lst`.
  * @return 1 on success, 0 on failure.
  */
 int	tokenize(t_context *ctx)
 {
-	size_t	index;
+	size_t	idx;
 	t_token	*token;
 
-	index = 0;
-	while (index < ctx->line_len)
+	idx = 0;
+	while (idx < ctx->line_len)
 	{
-		token = build_token_at(ctx->line, index);
-		token_lst_add_back(&(ctx->token_lst), token);
+		token = build_token_at(ctx->line, idx);
+		token_lst_add_back(ctx, token);
 		if (!token || token->len == 0)
 			break ;
-		index += token->len;
+		idx += token->len;
 	}
+	if (idx < ctx->line_len)
+		return (0);
 	return (1);
 }

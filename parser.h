@@ -13,7 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "../minishell.h"
+# include "./minishell.h"
 
 enum e_word_flag {
 	W_NULL,
