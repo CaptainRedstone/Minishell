@@ -1,0 +1,150 @@
+#ifndef MINISHELL_H
+# define MINISHELL_H
+// ======================================================== //
+//						CONSTANTS							//
+// ======================================================== //
+# define _XOPEN_SOURCE 600
+// colors
+// TODO: add prefix COL_
+# define RESET      "\033[0m"
+# define BLACK      "\033[30m"
+# define RED        "\033[31m"
+# define GREEN      "\033[32m"
+# define YELLOW     "\033[33m"
+# define BLUE       "\033[34m"
+# define MAGENTA    "\033[35m"
+# define CYAN       "\033[36m"
+# define WHITE      "\033[37m"
+# define BOLD       "\033[1m"
+# define BBLACK     "\033[30;1m"
+# define BRED       "\033[31;1m"
+# define BGREEN     "\033[32;1m"
+# define BYELLOW    "\033[33;1m"
+# define BBLUE      "\033[34;1m"
+# define BMAGENT    "\033[35;1m"
+# define BCYAN      "\033[36;1m"
+# define BWHITE     "\033[37;1m"
+// token
+# define TK_NULL_NAME "TK_NULL"
+# define TK_NULL_VAL '\0'
+# define TK_BLANK_NAME "TK_BLANK"
+# define TK_TAB_VAL '\t'
+# define TK_SPACE_VAL ' '
+# define TK_SQUOTE_NAME "TK_SQUOTE"
+# define TK_SQUOTE_VAL '\''
+# define TK_DQUOTE_NAME "TK_DQUOTE"
+# define TK_DQUOTE_VAL '\"'
+# define TK_PIPE_NAME "TK_PIPE"
+# define TK_PIPE_VAL '|'
+# define TK_REDIR_IN_NAME "TK_REDIR_IN"
+# define TK_REDIR_IN_VAL '<'
+# define TK_REDIR_OUT_NAME "TK_REDIR_OUT"
+# define TK_REDIR_OUT_VAL '>'
+# define TK_WORD_NAME "TK_WORD"
+# define TK_METACHARS " \t\'\"|<>"
+// ======================================================== //
+//						DEPENDENCIES						//
+// ======================================================== //
+# include "./libft/libft.h"
+# include <errno.h>
+# include <fcntl.h>
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <signal.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <sys/wait.h>
+# include <unistd.h>
+// ======================================================== //
+//						STRUCTURES							//
+// ======================================================== //
+// TODO: update t_commmand
+// TODO: add t_redir, t_word, t_token_type & t_word_flags
+typedef struct s_context	t_context;
+typedef struct s_token		t_token;
+typedef struct s_command	t_command;
+
+struct s_command
+{
+	char	*input;
+	char	*output;
+	char	*command_line;
+	char	**commands;
+};
+
+struct s_context
+{
+	char	*prompt;
+	char	*line;
+	size_t	line_len;
+	t_list	*token_lst;
+	int		token_lst_len;
+};
+
+struct s_token
+{
+	int		type;
+	size_t	start;
+	size_t	len;
+};
+
+enum e_token_type
+{
+	TK_NULL,
+	TK_BLANK,
+	TK_SQUOTE,
+	TK_DQUOTE,
+	TK_PIPE,
+	TK_REDIR_IN,
+	TK_REDIR_OUT,
+	TK_WORD,
+	TK_END,
+};
+
+void		print_welcome(void);
+
+char		*get_prompt(void);
+char		*get_hostname(void);
+char		*build_prompt(void);
+char		*join_and_free(char *s1, char *s2);
+
+int 		count_args(char *s);
+char		*parse_line(char *line);
+size_t		arg_len(char *s, int start);
+char		*get_input(char *line, char *pos_i);
+void		execute_command(char *line, char **envp);
+t_command	parse_command(char *line, t_command command);
+t_command	parse_input_output(char *line, t_command command);
+
+/* void		ft_cd(t_command command);
+void		ft_env(t_command command, char **envp);
+void		ft_pwd(t_command command);
+void		ft_echo(t_command command);
+void		ft_exit(t_command command);
+void		ft_color(t_command command);
+void		ft_executable(t_command command); */
+
+void		create_signal(void);
+void		handle_signal(int sig);
+
+void		error(char *command, char *error);
+
+void		free_array(char **array);
+void		free_struct(t_command command);
+
+void		print_command(t_command command);
+// ======================================================== //
+//						TOKENIZE							//
+// ======================================================== //
+// token.c
+int			get_token_type(char token_val);
+char		*get_token_name(int token_type);
+void		print_token(void *content);
+size_t		quote_len(char *quote_start, int quote_type);
+size_t		token_len(char *token_start, int token_type);
+// tokenize.c
+void		token_lst_add_back(t_list **token_lst, t_token *token);
+t_token		*build_token_at(char *line, size_t token_start);
+int			tokenize(t_context *ctx);
+
+#endif

@@ -1,7 +1,4 @@
-#include "../includes/colors.h"
-#include "../includes/includes.h"
-#include "../includes/minishell.h"
-#include "../includes/parser.h"
+#include "../minishell.h"
 
 t_command	parse_command(char *line, t_command command)
 {

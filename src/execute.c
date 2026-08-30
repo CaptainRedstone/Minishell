@@ -1,6 +1,4 @@
-#include "../includes/colors.h"
-#include "../includes/includes.h"
-#include "../includes/minishell.h"
+#include "../minishell.h"
 
 /* void	find_command(t_command command, char **envp)
 {

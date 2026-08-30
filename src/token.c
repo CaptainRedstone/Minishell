@@ -10,8 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/token.h"
+#include "../minishell.h"
 
+/**
+ * @brief Get token `name` from its `type` as in `e_token_type`.
+ */
 char	*get_token_name(int type)
 {
 	if (type == TK_NULL)
@@ -33,6 +36,9 @@ char	*get_token_name(int type)
 	return (NULL);
 }
 
+/**
+ * @brief Get token `type` as in `e_token_type` from first token value `c`.
+ */
 int	get_token_type(char c)
 {
 	if (c == TK_NULL_VAL)
@@ -52,6 +58,9 @@ int	get_token_type(char c)
 	return (TK_WORD);
 }
 
+/**
+ * @brief Print token to stdout
+ */
 void	print_token(void *content)
 {
 	t_token	*token;
@@ -61,26 +70,35 @@ void	print_token(void *content)
 		return ;
 	ft_putstr_fd(get_token_name(token->type), STDOUT_FILENO);
 	ft_putchar_fd('[', STDOUT_FILENO);
-	ft_putnbr_fd(token->pos, STDOUT_FILENO);
+	ft_putnbr_fd(token->start, STDOUT_FILENO);
 	ft_putchar_fd(':', STDOUT_FILENO);
-	ft_putnbr_fd(token->pos + token->len - 1, STDOUT_FILENO);
+	ft_putnbr_fd(token->start + token->len - 1, STDOUT_FILENO);
 	ft_putchar_fd(']', STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
-size_t	quote_len(char *line, int type)
+/**
+ * @brief Assuming `line` starts w/ quote of type `TK_SQUOTE` or `TK_DQUOTE`,
+ * compute length of quote.
+ * @attention Includes quote char
+ */
+size_t	quote_len(char *token_str, int token_type)
 {
 	size_t	i;
 
 	i = 1;
-	while (line[i] && (type != get_token_type(line[i])))
+	while (token_str[i] && (token_type != get_token_type(token_str[i])))
 		i++;
-	if (type == get_token_type(line[i]))
+	if (token_type == get_token_type(token_str[i]))
 		i++;
 	return (i);
 }
 
-size_t	token_len(char *line, int type)
+/**
+ * @brief Assuming `line` starts w/ token of `type` in `e_token_type`, 
+ * compute length of token.
+ */
+size_t	token_len(char *token_str, int type)
 {
 	size_t	i;
 
@@ -91,14 +109,14 @@ size_t	token_len(char *line, int type)
 		return (1);
 	if (type == TK_BLANK || type == TK_REDIR_IN || type == TK_REDIR_OUT)
 	{
-		while (line[i] && type == get_token_type(line[i]))
+		while (token_str[i] && type == get_token_type(token_str[i]))
 			i++;
 	}
 	if (type == TK_SQUOTE || type == TK_DQUOTE)
-		i = quote_len(line, type);
+		i = quote_len(token_str, type);
 	if (type == TK_WORD)
 	{
-		while (line[i] && !(ft_strchr(TK_METACHARS, line[i])))
+		while (token_str[i] && !(ft_strchr(TK_METACHARS, token_str[i])))
 			i++;
 	}
 	return (i);
