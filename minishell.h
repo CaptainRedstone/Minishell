@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
+/*   Updated: 2026/08/30 19:13:25 by aforcada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #ifndef MINISHELL_H
 # define MINISHELL_H
 // ======================================================== //
@@ -55,14 +66,11 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
 // ======================================================== //
 //						STRUCTURES							//
 // ======================================================== //
-
 // TODO: update t_commmand
 // TODO: add t_redir, t_word, t_token_type & t_word_flags
-
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
 typedef struct s_command	t_command;
@@ -111,7 +119,7 @@ char		*get_hostname(void);
 char		*build_prompt(void);
 char		*join_and_free(char *s1, char *s2);
 
-int 		count_args(char *s);
+int			count_args(char *s);
 char		*parse_line(char *line);
 size_t		arg_len(char *s, int start);
 char		*get_input(char *line, char *pos_i);
