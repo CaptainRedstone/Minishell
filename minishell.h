@@ -79,6 +79,13 @@ typedef struct s_command	t_command;
 typedef struct s_cmd		t_cmd;
 typedef struct s_word		t_word;
 typedef struct s_redir		t_redir;
+enum e_structure_type
+{
+	T_NULL_TYPE,
+	T_CONTEXT_TYPE,
+	T_TOKEN_TYPE,
+	T_CMD_TYPE,
+};
 // to be removed
 struct s_command
 {
@@ -148,10 +155,13 @@ struct s_redir
 // cmd
 struct s_cmd
 {
-	int		words_count;
-	t_list	*words;
+	int		status;
+	int		token_lst_len;
+	t_list	*token_lst;
 	int		redirs_count;
 	t_list	*redirs;
+	int		words_count;
+	t_list	*words;
 };
 
 void		print_welcome(void);
@@ -161,21 +171,8 @@ char		*get_hostname(void);
 char		*build_prompt(void);
 char		*join_and_free(char *s1, char *s2);
 
-int			count_args(char *s);
-char		*parse_line(char *line);
-size_t		arg_len(char *s, int start);
-char		*get_input(char *line, char *pos_i);
-void		execute_command(char *line, char **envp);
-t_command	parse_command(char *line, t_command command);
-t_command	parse_input_output(char *line, t_command command);
 
-/* void		ft_cd(t_command command);
-void		ft_env(t_command command, char **envp);
-void		ft_pwd(t_command command);
-void		ft_echo(t_command command);
-void		ft_exit(t_command command);
-void		ft_color(t_command command);
-void		ft_executable(t_command command); */
+
 
 void		create_signal(void);
 void		handle_signal(int sig);
@@ -200,5 +197,15 @@ size_t		token_len(char *token_start, int token_type);
 void		token_lst_add_back(t_context *ctx, t_token *token);
 t_token		*build_token_at(char *line, size_t token_start);
 int			tokenize(t_context *ctx);
-
+// ======================================================== //
+//						EXECUTION							//
+// ======================================================== //
+void		execute_command(char *line, char **envp);
+/* void		ft_cd(t_command command);
+void		ft_env(t_command command, char **envp);
+void		ft_pwd(t_command command);
+void		ft_echo(t_command command);
+void		ft_exit(t_command command);
+void		ft_color(t_command command);
+void		ft_executable(t_command command); */
 #endif
