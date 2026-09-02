@@ -163,16 +163,14 @@ struct s_cmd
 	int		words_count;
 	t_list	*words;
 };
-
+// ======================================================== //
+//						PROMPTING							//
+// ======================================================== //
 void		print_welcome(void);
-
 char		*get_prompt(void);
 char		*get_hostname(void);
 char		*build_prompt(void);
 char		*join_and_free(char *s1, char *s2);
-
-
-
 
 void		create_signal(void);
 void		handle_signal(int sig);
