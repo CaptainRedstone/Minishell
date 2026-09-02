@@ -88,8 +88,6 @@ size_t	quote_len(char *token_str, int token_type)
 		i++;
 	if (token_type == get_token_type(token_str[i]))
 		i++;
-	else
-		return (0);
 	return (i);
 }
 
