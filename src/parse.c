@@ -18,7 +18,7 @@ t_token	*get_token_at(void *placeholder, int idx, int cast_type)
 	t_list	*token_lst_node;
 
 	token_lst_node = NULL;
-	if (idx < 0 && cast_type != T_CONTEXT_TYPE && cast_type != T_CMD_TYPE)
+	if (idx < 0 || !(cast_type == T_CONTEXT_TYPE || cast_type == T_CMD_TYPE))
 		return (NULL);
 	if (cast_type == T_CONTEXT_TYPE)
 		token_lst_node = ((t_context *)placeholder)->token_lst;
@@ -47,8 +47,14 @@ int	init_cmd_lst(t_context *ctx)
 	int	idx;
 
 	idx = 0;
-	while (valid_pipe(ctx, idx))
+	ctx->current_token = ctx->token_lst->content;
+
+	// 
+	while (ctx->token_lst)
+	{
+		if (ctx->current_token->type != TK_PIPE)
 		idx++;
+	}
 	return (idx);
 }
 // // TODO: check path exist
