@@ -31,40 +31,97 @@ t_token	*get_token_at(void *placeholder, int idx, int cast_type)
 	return (token_lst_node->content);
 }
 
-// TODO: split cmd
-int	valid_pipe(t_context *ctx, int pipe_idx)
+int	valid_pipes(t_list *token_lst)
 {
-	if (pipe_idx == 0)
+	t_token	*token;
+
+	token = token_lst->content;
+	if (!token || token->type == TK_PIPE)
 		return (0);
-	ctx->current_token = get_token_at(ctx, pipe_idx + 1, T_CONTEXT_TYPE);
-	if (!(ctx->current_token) || (ctx->current_token->type == TK_PIPE))
-		return (0);
+	while (token_lst->next)
+	{
+		if (token->type == TK_PIPE)
+		{
+			token_lst = token_lst->next;
+			token = token_lst->content;
+			if (token->type == TK_PIPE)
+				return (0);
+		}
+		token_lst = token_lst->next;
+		token = token_lst->content;
+	}
 	return (1);
+}
+
+
+int	count_tokens_upto(t_list *token_lst, int token_type)
+{
+	int		count;
+
+	count = 0;
+	if (!token_lst)
+		return (0);
+	while (token_lst
+		&& ((t_token *)(token_lst->content))->type != token_type)
+	{
+		token_lst = token_lst->next;
+		count++;
+	}
+	if (((t_token *)(token_lst->content))->type == token_type)
+		return (count + 1);
+	return (count);
+}
+
+t_list	*safe_next(t_list *node)
+{
+	if (node)
+		return (node->next);
+	else
+		return (NULL);
+}
+
+t_list	*ft_sublst(t_list **lst, int start, int len)
+{
+	t_list	*prev;
+	t_list	*head;
+	t_list	*node;
+
+	if (!lst || !(*lst) || start < 0 || len < 1)
+		return (NULL);
+	prev = NULL;
+	head = *lst;
+	while (head && start--)
+	{
+		prev = head;
+		head = head->next;
+	}
+	node = head;
+	while (node && --len)
+		node = node->next;
+	if (prev)
+		prev->next = safe_next(node);
+	else
+		*lst = safe_next(node);
+	if (node)
+		node->next = NULL;
+	return (head);
 }
 
 int	init_cmd_lst(t_context *ctx)
 {
-	int	idx;
+	t_cmd	*cmd;
 
-	idx = 0;
-	ctx->current_token = ctx->token_lst->content;
-
-	// 
+	if (!ctx || !(ctx->token_lst) || !valid_pipes(ctx->token_lst))
+		return (0);
 	while (ctx->token_lst)
 	{
-		if (ctx->current_token->type != TK_PIPE)
-		idx++;
+		cmd = ft_calloc(1, sizeof(t_cmd));
+		if (!cmd)
+			return (0);
+		cmd->token_lst_len = count_tokens_upto(ctx->token_lst, TK_PIPE);
+		cmd->token_lst = ft_sublst(&(ctx->token_lst), 0, cmd->token_lst_len);
+		ctx->token_lst_len -= cmd->token_lst_len;
+		ft_lstadd_back(&(ctx->cmd_lst), ft_lstnew(cmd));
 	}
-	return (idx);
+	return (1);
 }
-// // TODO: check path exist
-// int	check_redir(t_context *ctx, int redir_idx)
-// {
-// 	ctx->current_token = get_token_at(ctx, redir_idx, );
-// 	if (2 < ctx->current_token->len)
-// 		return (0);
-// 	ctx->current_token = get_token_at(ctx, redir_idx + 1);
-// 	if (ctx->current_token && ctx->current_token->type != TK_WORD)
-// 		return (0);
-// 	return (1);
-// }

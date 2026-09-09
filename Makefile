@@ -3,6 +3,7 @@ NAME        = minishell
 # Directories
 SRC_DIR     = src
 OBJ_DIR     = obj
+TEST_DIR	= test
 LIBFT_DIR   = libft
 
 # Source files
@@ -29,6 +30,13 @@ SRCS        = $(SRC_DIR)/main.c \
 # Object files
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
+# Test files
+TEST_SRCS	= \
+				$(filter-out $(SRC_DIR)/main.c, $(SRCS))\
+				$(TEST_DIR)/test_parse.c \
+
+TEST_OBJS	= \
+				$(TEST_SRCS:%.c=%.o)
 # Libraries
 LIBFT       = $(LIBFT_DIR)/libft.a
 
@@ -67,6 +75,10 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+test: $(TEST_OBJS) $(LIBFT)
+	$(CC) $(CFLAGS) $(TEST_OBJS) $(FLAGS) $(LIBFT) -o test_$(NAME)
+	rm -f $(TEST_OBJS)
 
 .PHONY: all clean fclean re
 

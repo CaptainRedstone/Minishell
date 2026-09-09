@@ -22,10 +22,11 @@ int	main(int argc, char **argv, char **envp)
 		if (*(ct.line))
 			add_history(ct.line);
 		ct.line_len = ft_strlen(ct.line);
-		if (ct.line_len > 0)
+		if (0 < ct.line_len)
 		{
 			tokenize(&ct);
 			ft_lstiter(ct.token_lst, &print_token);
+			init_cmd_lst(&ct);
 			// execute_command(line, envp);
 		}
 	}

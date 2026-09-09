@@ -23,7 +23,8 @@ void	execute_command(char *line, char **envp)
 	t_command	command;
 
 	(void)envp;
-	command = parse_command(line, command);
+	(void)line;
+	// command = parse_command(line, command);
 	print_command(command);
 	/* find_command(command, envp); */
 	free_struct(command);

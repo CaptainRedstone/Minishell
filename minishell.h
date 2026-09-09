@@ -196,6 +196,13 @@ void		token_lst_add_back(t_context *ctx, t_token *token);
 t_token		*build_token_at(char *line, size_t token_start);
 int			tokenize(t_context *ctx);
 // ======================================================== //
+//						PARSING								//
+// ======================================================== //
+int			count_tokens_upto(t_list *token_lst, int token_type);
+int			valid_pipes(t_list *token_lst);
+t_list		*ft_sublst(t_list **lst, int start, int len);
+int			init_cmd_lst(t_context *ctx);
+// ======================================================== //
 //						EXECUTION							//
 // ======================================================== //
 void		execute_command(char *line, char **envp);

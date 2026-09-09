@@ -77,6 +77,6 @@ int	tokenize(t_context *ctx)
 			free(ctx->current_token);
 	}
 	if (idx < ctx->line_len)
-		return (ft_lstclear(&(ctx->token_lst), delete_token), 0);
+		return (ft_lstclear(&(ctx->token_lst), &delete_token), 0);
 	return (1);
 }

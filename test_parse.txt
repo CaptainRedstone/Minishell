@@ -5,4 +5,4 @@ OUT_1
 IN_2
 	echo salut |
 OUT_2
-	> 
+	>
