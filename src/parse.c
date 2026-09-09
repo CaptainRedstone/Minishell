@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/02 17:11:33 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/09 16:09:46 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,60 +51,6 @@ int	valid_pipes(t_list *token_lst)
 		token = token_lst->content;
 	}
 	return (1);
-}
-
-
-int	count_tokens_upto(t_list *token_lst, int token_type)
-{
-	int		count;
-
-	count = 0;
-	if (!token_lst)
-		return (0);
-	while (token_lst
-		&& ((t_token *)(token_lst->content))->type != token_type)
-	{
-		token_lst = token_lst->next;
-		count++;
-	}
-	if (((t_token *)(token_lst->content))->type == token_type)
-		return (count + 1);
-	return (count);
-}
-
-t_list	*safe_next(t_list *node)
-{
-	if (node)
-		return (node->next);
-	else
-		return (NULL);
-}
-
-t_list	*ft_sublst(t_list **lst, int start, int len)
-{
-	t_list	*prev;
-	t_list	*head;
-	t_list	*node;
-
-	if (!lst || !(*lst) || start < 0 || len < 1)
-		return (NULL);
-	prev = NULL;
-	head = *lst;
-	while (head && start--)
-	{
-		prev = head;
-		head = head->next;
-	}
-	node = head;
-	while (node && --len)
-		node = node->next;
-	if (prev)
-		prev->next = safe_next(node);
-	else
-		*lst = safe_next(node);
-	if (node)
-		node->next = NULL;
-	return (head);
 }
 
 int	init_cmd_lst(t_context *ctx)

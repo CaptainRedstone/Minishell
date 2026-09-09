@@ -6,9 +6,10 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/08/30 19:13:25 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/09 16:34:42 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 // ======================================================== //
@@ -171,17 +172,12 @@ char		*get_prompt(void);
 char		*get_hostname(void);
 char		*build_prompt(void);
 char		*join_and_free(char *s1, char *s2);
-
 void		create_signal(void);
 void		handle_signal(int sig);
-
 void		error(char *command, char *error);
-
 void		free_array(char **array);
 void		free_struct(t_command command);
-
 void		print_command(t_command command);
-
 // ======================================================== //
 //						TOKENIZE							//
 // ======================================================== //
@@ -198,9 +194,12 @@ int			tokenize(t_context *ctx);
 // ======================================================== //
 //						PARSING								//
 // ======================================================== //
-int			count_tokens_upto(t_list *token_lst, int token_type);
-int			valid_pipes(t_list *token_lst);
+// ft_sublst.c
 t_list		*ft_sublst(t_list **lst, int start, int len);
+// parse_utils.c
+int			count_tokens_upto(t_list *token_lst, int token_type);
+// parse.c
+int			valid_pipes(t_list *token_lst);
 int			init_cmd_lst(t_context *ctx);
 // ======================================================== //
 //						EXECUTION							//

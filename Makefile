@@ -16,16 +16,17 @@ SRCS        = $(SRC_DIR)/main.c \
 				$(SRC_DIR)/exit.c \
 				$(SRC_DIR)/color.c \
 				$(SRC_DIR)/debug.c \
-				$(SRC_DIR)/parse.c \
 				$(SRC_DIR)/prompt.c \
 				$(SRC_DIR)/signal.c \
 				$(SRC_DIR)/errors.c \
 				$(SRC_DIR)/welcome.c \
-				$(SRC_DIR)/execute.c \
-				$(SRC_DIR)/executable.c \
-				$(SRC_DIR)/parse_utils.c \
 				$(SRC_DIR)/token.c \
 				$(SRC_DIR)/tokenize.c \
+				$(SRC_DIR)/ft_sublst.c \
+				$(SRC_DIR)/parse.c \
+				$(SRC_DIR)/parse_utils.c \
+				$(SRC_DIR)/execute.c \
+				$(SRC_DIR)/executable.c \
 
 # Object files
 OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
