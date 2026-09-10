@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/09 16:34:42 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/10 06:59:03 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,9 +126,7 @@ enum e_token_type
 	TK_DQUOTE,
 	TK_PIPE,
 	TK_REDIR_IN,
-	TK_REDIR_HEREDOC,
 	TK_REDIR_OUT,
-	TK_REDIR_APPEND,
 	TK_WORD,
 	TK_END,
 };
@@ -161,8 +159,8 @@ struct s_cmd
 	t_list	*token_lst;
 	int		redirs_count;
 	t_list	*redirs;
-	int		words_count;
-	t_list	*words;
+	int		argc;
+	t_list	*argv;
 };
 // ======================================================== //
 //						PROMPTING							//
