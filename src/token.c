@@ -17,8 +17,6 @@
  */
 char	*get_token_name(t_token_t type)
 {
-	if (type == TK_NULL)
-		return (TK_NULL_NAME);
 	if (type == TK_BLANK)
 		return (TK_BLANK_NAME);
 	if (type == TK_SQUOTE)
@@ -41,8 +39,6 @@ char	*get_token_name(t_token_t type)
  */
 t_token_t	get_token_type(char c)
 {
-	if (c == TK_NULL_VAL)
-		return (TK_NULL);
 	if (c == TK_TAB_VAL || c == TK_SPACE_VAL)
 		return (TK_BLANK);
 	if (c == TK_SQUOTE_VAL)
@@ -100,7 +96,7 @@ size_t	token_len(char *token_str, t_token_t type)
 	size_t	i;
 
 	i = 0;
-	if (type == TK_NULL)
+	if (!token_str)
 		return (0);
 	if (type == TK_PIPE)
 		return (1);

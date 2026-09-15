@@ -37,8 +37,6 @@
 # define BCYAN      "\033[36;1m"
 # define BWHITE     "\033[37;1m"
 // token
-# define TK_NULL_NAME "TK_NULL"
-# define TK_NULL_VAL '\0'
 # define TK_BLANK_NAME "TK_BLANK"
 # define TK_TAB_VAL '\t'
 # define TK_SPACE_VAL ' '
@@ -53,8 +51,6 @@
 # define TK_REDIR_OUT_NAME "TK_REDIR_OUT"
 # define TK_REDIR_OUT_VAL '>'
 # define TK_WORD_NAME "TK_WORD"
-# define TK_REDIR_HEREDOC_NAME "TK_REDIR_HEREDOC"
-# define TK_REDIR_APPEND_NAME "TK_REDIR_APPEND"
 # define TK_METACHARS " \t\'\"|<>"
 // ======================================================== //
 //						DEPENDENCIES						//
@@ -112,7 +108,6 @@ struct s_context
 // token
 typedef enum e_token_type
 {
-	TK_NULL,
 	TK_BLANK,
 	TK_SQUOTE,
 	TK_DQUOTE,
@@ -222,7 +217,7 @@ int			tokenize(t_context *ctx);
 t_list		*ft_sublst(t_list **lst, int start, int len);
 // parse_utils.c
 int			valid_pipes(t_list *token_lst);
-int			valid_redirs_syntax(t_list *token_lst);
+int			valid_redir_syntax(t_list *token_lst);
 int			count_redirs(t_list *token_lst);
 int			count_cmd_args(t_list *token_lst);
 // parse.c
