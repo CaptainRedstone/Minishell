@@ -81,11 +81,6 @@ int	count_tokens_upto(t_list *token_lst, t_token_t end_type)
 	return (count);
 }
 
-int	count_tokens_if(t_list *token_lst, int len, int (*cond)(t_token *token))
-{
-
-}
-
 int	count_cmd_args(t_list *token_lst)
 {
 	t_token	*token;

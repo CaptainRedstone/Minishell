@@ -76,7 +76,6 @@
 // TODO: add t_redir, t_word, perhaps t_token_type & t_word_flags
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
-typedef enum e_token_type	t_token_t;
 typedef struct s_command	t_command;
 typedef struct s_cmd		t_cmd;
 typedef struct s_word		t_word;
@@ -112,13 +111,7 @@ struct s_context
 	t_list	*envp_lst;
 };
 // token
-struct s_token
-{
-	t_token_t	type;
-	size_t		start;
-	size_t		len;
-};
-enum e_token_type
+typedef enum e_token_type
 {
 	TK_NULL,
 	TK_BLANK,
@@ -129,6 +122,12 @@ enum e_token_type
 	TK_REDIR_OUT,
 	TK_WORD,
 	TK_END,
+}	t_token_t;
+struct s_token
+{
+	t_token_t	type;
+	size_t		start;
+	size_t		len;
 };
 // word
 struct s_word
@@ -199,7 +198,7 @@ void		print_command(t_command command);
 //						TOKENIZE							//
 // ======================================================== //
 // token.c
-int			get_token_type(char token_val);
+t_token_t	get_token_type(char token_val);
 char		*get_token_name(t_token_t type);
 void		print_token(void *content);
 size_t		quote_len(char *quote_start, t_token_t quote_type);

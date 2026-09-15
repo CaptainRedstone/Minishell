@@ -39,7 +39,7 @@ char	*get_token_name(t_token_t type)
 /**
  * @brief Get token `type` as in `e_token_type` from first token value `c`.
  */
-int	get_token_type(char c)
+t_token_t	get_token_type(char c)
 {
 	if (c == TK_NULL_VAL)
 		return (TK_NULL);

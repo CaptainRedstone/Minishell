@@ -23,7 +23,7 @@ int	init_cmd_lst(t_context *ctx)
 		printf("ctx.token_cnt=%d\n", ctx->token_cnt);
 		cmd = ft_calloc(1, sizeof(t_cmd));
 		if (!cmd)
-			return (ft_lstclear(), 0);
+			return (0);
 		cmd->token_cnt = count_tokens_upto(ctx->token_lst, TK_PIPE);
 		cmd->token_lst = ft_sublst(&(ctx->token_lst), 0, cmd->token_cnt);
 		if (cmd->token_lst)
