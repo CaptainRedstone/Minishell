@@ -21,20 +21,16 @@ int	valid_pipes(t_list *token_lst)
 	token = token_lst->content;
 	if (token->type == TK_PIPE)
 		return (0);
-	while (token_lst->next)
+	while (token_lst && token_lst->next)
 	{
+		token = token_lst->content;
 		if (token->type == TK_PIPE)
 		{
-			token_lst = token_lst->next;
-			token = token_lst->content;
+			token = token_lst->next->content;
 			if (token->type == TK_PIPE)
 				return (0);
 		}
-		if (token_lst->next)
-		{
-			token_lst = token_lst->next;
-			token = token_lst->content;
-		}
+		token_lst = token_lst->next;
 	}
 	return (1);
 }
@@ -50,9 +46,10 @@ int	valid_redirs_syntax(t_list *token_lst)
 		token = token_lst->content;
 		if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
 		{
-			token_lst = token_lst->next;
-			token = token_lst->content;
-			if (token->type != TK_WORD)
+			token = token_lst->next->content;
+			if (token->type != TK_WORD
+				&& token->type != TK_SQUOTE
+				&& token->type != TK_DQUOTE)
 				return (0);
 		}
 		token_lst = token_lst->next;
@@ -60,45 +57,35 @@ int	valid_redirs_syntax(t_list *token_lst)
 	return (1);
 }
 
-int	count_tokens_upto(t_list *token_lst, t_token_t end_type)
+int	count_redirs(t_list *token_lst)
 {
-	t_token	*token;
 	int		count;
+	t_token	*token;
 
 	count = 0;
-	if (!token_lst)
-		return (0);
-	token = token_lst->content;
-	while (token_lst && token->type != end_type)
+	while (token_lst)
 	{
+		token = token_lst->content;
+		if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
+			count++;
 		token_lst = token_lst->next;
-		if (token_lst)
-			token = token_lst->content;
-		count++;
 	}
-	if (token_lst && token->type == end_type)
-		return (count + 1);
 	return (count);
 }
 
 int	count_cmd_args(t_list *token_lst)
 {
-	t_token	*token;
 	int		count;
+	t_token	*token;
 
 	count = 0;
-	if (!token_lst)
-		return (0);
 	while (token_lst)
 	{
 		token = token_lst->content;
-		if (token->type == TK_WORD)
-			count++;
-		if (token->type == TK_SQUOTE || token->type == TK_DQUOTE)
-			count++;
-		if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
-			token_lst = token_lst->next;
+		if (token->type == TK_PIPE)
+			return (count);
 		token_lst = token_lst->next;
+		count++;
 	}
 	return (count);
 }
