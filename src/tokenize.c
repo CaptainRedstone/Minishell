@@ -35,7 +35,7 @@ void	token_lst_add_back(t_context *ctx, t_token *token)
 		ctx->token_lst = node;
 	else
 		ft_lstadd_back(&(ctx->token_lst), node);
-	ctx->token_lst_len++;
+	ctx->token_cnt++;
 }
 
 /**

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minishell — Flowchart des appels de fonction</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  body { background: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 20px; }
+  h1 { text-align: center; color: #58a6ff; font-size: 1.6em; margin-bottom: 4px; }
+  .sub { text-align: center; color: #8b949e; font-size: 0.9em; margin-bottom: 30px; }
+  .section { max-width: 1300px; margin: 0 auto 40px; }
+  h2 { color: #f0883e; border-bottom: 1px solid #30363d; padding-bottom: 6px; font-size: 1.15em; }
+  .mermaid { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 20px; overflow-x: auto; }
+  .note { font-size: 0.8em; color: #8b949e; margin-top: 6px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<h1>🐚 Minishell — Flowchart des appels de fonction</h1>
+<p class="sub">Pucci17PinkerZ — 34 fichiers C, ~3500 lignes de code</p>
+
+<div class="section">
+  <h2>1. Vue d'ensemble : Boucle principale</h2>
+  <div class="mermaid">
+graph TD
+    MAIN["<b>main()</b><br/>main.c"]
+    SETUP["<b>setup()</b><br/>setup/setup.c"]
+    LOOP["<b>main_loop()</b><br/>main.c"]
+    EXIT_PROG["<b>clean_exit()</b><br/>clean/clean_utils.c"]
+
+    MAIN -->|"ft_bzero + setup"| SETUP
+    SETUP -->|"succès"| LOOP
+    LOOP -->|"readline = NULL (Ctrl+D)"| EXIT_PROG
+    LOOP -->|"sinon, boucle infinie"| TOKEN["<b>tokenizer()</b><br/>token/find_token_in_readline.c"]
+    TOKEN --> EXP_VAR["<b>check_exp_var()</b><br/>env/exp_variable.c"]
+    EXP_VAR --> PARSE["<b>parse_token()</b><br/>parsing/parsing.c"]
+    PARSE --> EXEC["<b>executor()</b><br/>exec/exec.c"]
+    EXEC --> CLEAN["<b>clean_loop()</b><br/>clean/clean_utils.c"]
+    CLEAN -->|"add_history + free(rl)"| LOOP
+
+    style MAIN fill:#1f6feb,color:#fff
+    style SETUP fill:#238636,color:#fff
+    style LOOP fill:#1f6feb,color:#fff
+    style EXIT_PROG fill:#da3633,color:#fff
+    style TOKEN fill:#a371f7,color:#fff
+    style EXP_VAR fill:#a371f7,color:#fff
+    style PARSE fill:#d29922,color:#fff
+    style EXEC fill:#238636,color:#fff
+    style CLEAN fill:#da3633,color:#fff
+  </div>
+  <p class="note">La boucle lit une ligne, la tokenize, expand les variables, parse en commandes, exécute, nettoie — puis recommence.</p>
+</div>
+
+<div class="section">
+  <h2>2. Setup — Initialisation de l'environnement</h2>
+  <div class="mermaid">
+graph TD
+    SETUP["<b>setup()</b>"]
+
+    SETUP -->|"env[0] == NULL"| CREATE["<b>create_env()</b><br/>env/create_env.c"]
+    SETUP -->|"env existe"| SETUPENV["<b>setup_env()</b><br/>env/export_env.c"]
+
+    CREATE --> SPWD["search_pwd()<br/>→ getcwd, ft_strdup,<br/>  ft_node_env, ft_add_back_env"]
+    CREATE --> SHLVL["create_SHLVL()<br/>→ ft_strdup, ft_node_env,<br/>  ft_add_back_env"]
+    CREATE --> CPATH["create_path_no_env()<br/>→ ft_strdup, ft_node_env,<br/>  ft_add_back_env"]
+    CREATE -->|"all->env = head"| SRCHNO["<b>search_path_no_env()</b><br/>parsing/last_parsing.c"]
+
+    SETUPENV --> PKEY["put_in_key()<br/>→ ct_key_value"]
+    SETUPENV --> PVAL["put_in_value()<br/>→ ft_strchr, ft_strdup"]
+    SETUPENV --> NODE_ENV["ft_node_env()"]
+    SETUPENV --> ADD_BACK["ft_add_back_env()"]
+    SETUPENV --> SHLVL_ADD["shlvl_add()<br/>→ ft_compare, ft_atoi, ft_itoa"]
+    SETUPENV --> CHK_PATH["check_path()<br/>→ ft_compare, create_path()"]
+    SETUPENV -->|"all->env = head"| SRCH["<b>search_path()</b><br/>parsing/last_parsing.c"]
+
+    SRCHNO --> INIT_SIG["<b>init_original_signals()</b><br/>signal/signal.c"]
+    SRCH --> INIT_SIG
+    INIT_SIG --> SIG_SETUP["<b>setup_signal()</b><br/>signal/signal.c<br/>→ sigint_handler, sigemptyset, sigaction"]
+    SIG_SETUP --> STATUS["*get_status() = 0<br/>utils/get_status.c"]
+
+    style SETUP fill:#1f6feb,color:#fff
+    style CREATE fill:#238636,color:#fff
+    style SETUPENV fill:#238636,color:#fff
+    style SIG_SETUP fill:#a371f7,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>3. Tokenizer — Découpage de la ligne en tokens</h2>
+  <div class="mermaid">
+graph TD
+    TOK["<b>tokenizer()</b><br/>token/find_token_in_readline.c"]
+    TOK -->|"parcourt chaque char"| FBC["<b>find_by_char()</b><br/>token/find_token_by_char.c"]
+
+    FBC -->|"char = pipe"| PIPE["new_pipe()"]
+    FBC -->|"char = inf"| RIN["new_redir_in_or_heredoc()"]
+    FBC -->|"char = sup"| ROUT["new_redir_out_or_appnd()"]
+    FBC -->|"single quote"| SQUOTE["new_single_quote()"]
+    FBC -->|"double quote"| DQUOTE["new_double_quote()"]
+    FBC -->|"mot normal"| WORD["new_word_or_cmd() - is_a_separator()"]
+
+    PIPE --> NTN["<b>new_token_node()</b>"]
+    RIN -->|"double inf détecté"| HEREDOC["new_heredoc()"]
+    RIN -->|"simple inf"| REDIR_IN["REDIR_IN"]
+    ROUT -->|"double sup détecté"| APPEND["new_appnd()"]
+    ROUT -->|"simple sup"| REDIR_OUT["REDIR_OUT"]
+
+    REDIR_IN --> NTN
+    REDIR_OUT --> NTN
+    HEREDOC --> NTN
+    APPEND --> NTN
+    SQUOTE --> NTN
+    DQUOTE --> NTN
+    WORD --> NTN
+
+    NTN --> CTN["<b>create_token_node()</b><br/>→ malloc"]
+    CTN --> LST["<b>last_token_list()</b><br/>→ parcourt la liste"]
+
+    style TOK fill:#a371f7,color:#fff
+    style FBC fill:#a371f7,color:#fff
+    style NTN fill:#a371f7,color:#fff
+    style PIPE fill:#d29922,color:#fff
+    style RIN fill:#d29922,color:#fff
+    style ROUT fill:#d29922,color:#fff
+    style SQUOTE fill:#d29922,color:#fff
+    style DQUOTE fill:#d29922,color:#fff
+    style WORD fill:#d29922,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>4. Expansion des variables — $PATH, $?, guillemets</h2>
+  <div class="mermaid">
+graph TD
+    CEV["<b>check_exp_var()</b><br/>env/exp_variable.c"]
+    CEV -->|"parcourt tokens"| CSIGN["<b>check_sign()</b>"]
+
+    CSIGN -->|"guillemets"| QUOTES["<b>quotes()</b>"]
+    CSIGN -->|"contient dollar"| CDOLLAR["<b>check_dollar()</b>"]
+
+    QUOTES -->|"double quote"| DQ["<b>double_quote()</b>"]
+    QUOTES -->|"single quote"| SQ["<b>single_quote()</b>"]
+
+    DQ --> STRIP1["strip_quotes() - ft_strlen + ft_substr"]
+    STRIP1 -->|"contient dollar"| EXPAND["<b>expand_in_str()</b> - env/next_exp_var.c"]
+    SQ --> STRIP2["strip_quotes() - ft_strlen + ft_substr"]
+
+    CDOLLAR --> EXPAND
+    EXPAND --> GVV["<b>get_var_value()</b>"]
+    GVV -->|"dollar+?"| STATUS2["ft_itoa(*get_status())"]
+    GVV -->|"dollar+VAR"| INENV["<b>in_env()</b> - ft_compare sur env list"]
+    EXPAND --> FREE_EXP["free_expand() - free x3"]
+
+    style CEV fill:#a371f7,color:#fff
+    style EXPAND fill:#d29922,color:#fff
+    style GVV fill:#d29922,color:#fff
+    style INENV fill:#238636,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>5. Parsing — Tokens → Liste de commandes (t_parser)</h2>
+  <div class="mermaid">
+graph TD
+    PT["<b>parse_token()</b><br/>parsing/parsing.c"]
+    PT --> NODE_P["ft_node_pars()<br/>→ malloc, ft_strdup"]
+    PT --> CW["count_words()<br/>parsing/last_parsing.c"]
+    PT --> CALLOC["ft_calloc()"]
+    PT --> PL["<b>parse_loop()</b>"]
+
+    PL -->|"dispatch"| AEI["<b>all_else_if()</b><br/>parsing/next_parsing.c"]
+
+    AEI -->|"WORD"| STRDUP["ft_strdup()"]
+    AEI -->|"REDIR_OUT"| R_OUT["<b>redir_out()</b><br/>→ xclose, open()"]
+    AEI -->|"APPEND"| APP["<b>append()</b><br/>→ xclose, open()"]
+    AEI -->|"REDIR_IN"| R_IN["<b>redir_in()</b><br/>→ xclose, open()"]
+    AEI -->|"PIPE"| FTP["<b>ft_pipe()</b><br/>→ ft_node_pars, ft_addback_parse,<br/>  count_words, ft_calloc"]
+    AEI -->|"HEREDOC"| HD["<b>heredoc()</b><br/>→ pipe, loop_heredoc()"]
+
+    HD --> LH["<b>loop_heredoc()</b>"]
+    LH -->|"sans quotes"| EXPAND2["expand_in_str() dans le heredoc"]
+    LH -->|"avec quotes"| LHQ["loop_heredoc_quotes()<br/>→ strip_quotes()"]
+    LH -->|"écrit dans pipe"| WRITE["write(), ft_strjoin()"]
+
+    style PT fill:#d29922,color:#fff
+    style AEI fill:#d29922,color:#fff
+    style FTP fill:#1f6feb,color:#fff
+    style HD fill:#a371f7,color:#fff
+    style EXPAND2 fill:#a371f7,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>6. Exécution — Cœur du shell</h2>
+  <div class="mermaid">
+graph TD
+    EXEC_MAIN["<b>executor()</b><br/>exec/exec.c"]
+    EXEC_MAIN --> IGNORE["ignore_signals()"]
+    EXEC_MAIN --> COUNT["count_cmds()"]
+    EXEC_MAIN -->|"1 commande"| SINGLE["<b>exec_single_cmd()</b>"]
+    EXEC_MAIN -->|"≥2 commandes"| PIPE_EXEC["<b>exec_pipeline()</b><br/>exec/exec_pipeline.c"]
+    EXEC_MAIN --> RESIG["setup_signal()"]
+
+    SINGLE --> IS_BLT["is_builtin()<br/>→ ft_strncmp × 7"]
+    IS_BLT -->|"oui"| SINGLE_BLT["<b>exec_single_builtin()</b><br/>→ dup/dup2/exec_builtin/xclose"]
+    IS_BLT -->|"non"| SINGLE_EXT["<b>exec_single_external()</b><br/>exec/exec_external_cmd.c"]
+
+    SINGLE_EXT --> FORK["fork()"]
+    FORK -->|"enfant"| CHILD_SE["<b>child_single_external()</b>"]
+    FORK -->|"parent"| PARENT_SE["<b>parent_single_external()</b><br/>→ xclose, waitpid, get_status"]
+
+    CHILD_SE --> APPLY_REDIR["<b>apply_redirections()</b><br/>→ dup2, xclose"]
+    CHILD_SE --> BPC["<b>before_path_check()</b><br/>exec/find_path_in_env.c"]
+    CHILD_SE --> REBUILD["<b>re_build_env()</b><br/>exec/rebuild_env.c"]
+    CHILD_SE --> RESTORE["restore_original_signals()"]
+    CHILD_SE --> EXECVE["execve()"]
+
+    SINGLE_BLT --> EXEC_BLT["<b>exec_builtin()</b><br/>exec/exec_builtins.c"]
+
+    PIPE_EXEC --> PIPE_LOOP["fork() × nb_cmds"]
+    PIPE_LOOP -->|"enfant"| CHILD_PIPE["<b>child_pipeline()</b>"]
+    PIPE_LOOP -->|"parent"| MANAGE_FD["manage_parent_fds()"]
+    CHILD_PIPE --> SETUP_PFD["setup_pipe_fds()<br/>→ dup2, xclose"]
+    CHILD_PIPE --> APPLY_REDIR2["apply_redirections()"]
+    CHILD_PIPE --> EXEC_PIPE_CMD["<b>execute_pipeline_cmd()</b>"]
+    EXEC_PIPE_CMD -->|"builtin"| EXEC_BLT2["exec_builtin() + exit()"]
+    EXEC_PIPE_CMD -->|"externe"| BPC2["before_path_check()"]
+    BPC2 --> REBUILD2["re_build_env()"]
+    REBUILD2 --> RESTORE2["restore_original_signals()"]
+    RESTORE2 --> EXECVE2["execve()"]
+
+    PIPE_LOOP --> WAIT_PIPE["<b>wait_pipeline()</b><br/>→ waitpid, get_status"]
+    PIPE_LOOP --> XCLOSE["xclose()"]
+
+    style EXEC_MAIN fill:#238636,color:#fff
+    style PIPE_EXEC fill:#1f6feb,color:#fff
+    style EXECVE fill:#da3633,color:#fff
+    style EXECVE2 fill:#da3633,color:#fff
+    style BPC fill:#d29922,color:#fff
+    style EXEC_BLT fill:#a371f7,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>7. Résolution de path — before_path_check → execve</h2>
+  <div class="mermaid">
+graph TD
+    BPC_MAIN["<b>before_path_check()</b><br/>exec/find_path_in_env.c"]
+
+    BPC_MAIN -->|"contient '/'"| ACC_DIRECT["<b>access_check()</b><br/>→ ft_strjoin + access()"]
+    BPC_MAIN -->|"pas de '/'"| FT_JOIN["ft_strjoin('/', cmd)"]
+    FT_JOIN --> PCHECK["<b>path_check()</b>"]
+
+    PCHECK --> FIND_PATH["<b>find_path_in_env()</b><br/>→ ft_strncmp sur PATH"]
+    FIND_PATH -->|"trouvé"| FT_SPLIT["ft_split(path, ':')"]
+    FT_SPLIT --> PEXIST["<b>path_exist()</b><br/>→ boucle access_check()"]
+    FIND_PATH -->|"pas trouvé"| ACC_DIRECT
+
+    PEXIST --> ACC_DIRECT
+
+    ACC_DIRECT -->|"access OK"| RETURN_PATH["retourne le path complet"]
+    ACC_DIRECT -->|"access KO"| FREE_NULL["free → retourne NULL"]
+
+    style BPC_MAIN fill:#d29922,color:#fff
+    style FIND_PATH fill:#238636,color:#fff
+    style ACC_DIRECT fill:#a371f7,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>8. Builtins — echo, cd, pwd, export, unset, env, exit</h2>
+  <div class="mermaid">
+graph TD
+    EB["<b>exec_builtin()</b><br/>exec/exec_builtins.c"]
+
+    EB -->|"echo"| ECHO["<b>echo_builtin()</b><br/>→ is_n_option, ft_putstr_fd"]
+    EB -->|"cd"| CD["<b>cd_builtin()</b><br/>builtins/cd_builtin.c"]
+    EB -->|"pwd"| PWD["<b>pwd_builtin()</b><br/>→ getcwd, write"]
+    EB -->|"export"| EXPORT["<b>export_builtin()</b><br/>builtins/export_builtin.c"]
+    EB -->|"unset"| UNSET["<b>unset_builtin()</b><br/>builtins/unset_builtin.c"]
+    EB -->|"env"| ENV_CMD["<b>cmd_env()</b><br/>→ ft_putstr_fd"]
+    EB -->|"exit"| EXIT_BLT["<b>exit_builtin()</b><br/>→ is_numeric, clean_exit"]
+
+    CD -->|"sans argument"| HOME["go_to_home_dir()<br/>→ ft_strncmp HOME, chdir, update_env"]
+    CD -->|"avec argument"| CHDIR["chdir()"]
+    HOME --> UPD["<b>update_env()</b>"]
+    CHDIR --> UPD
+    UPD --> FPWD["find_pwd_node()"]
+    UPD --> FOLDPWD["find_oldpwd_node()"]
+    UPD --> GETCWD["getcwd()"]
+    UPD --> ADD_BACK2["ft_add_back_env() + ft_node_env()"]
+
+    EXPORT -->|"sans args"| PRINT_EXP["print_export()<br/>→ ft_putstr_fd"]
+    EXPORT -->|"avec args"| ADD_UPD["<b>add_or_update()</b>"]
+    ADD_UPD --> PARSE_ARG["parse_arg()<br/>→ ft_strchr, ft_substr, ft_strdup"]
+    ADD_UPD --> IS_VALID["is_valid_arg()<br/>→ ft_isalpha, ft_isalnum"]
+    ADD_UPD --> UPD_EXIST["update_existing()<br/>→ ft_compare, ft_strchr"]
+    ADD_UPD --> APP_NODE["append_node()<br/>→ malloc, ft_add_back_env-like"]
+
+    UNSET --> RM_NODE["<b>remove_env_node()</b><br/>→ ft_compare, ft_lst_del_env"]
+
+    style EB fill:#a371f7,color:#fff
+    style CD fill:#1f6feb,color:#fff
+    style EXPORT fill:#d29922,color:#fff
+    style UNSET fill:#d29922,color:#fff
+    style EXIT_BLT fill:#da3633,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>9. Nettoyage — Libération mémoire</h2>
+  <div class="mermaid">
+graph TD
+    CL["<b>clean_loop()</b><br/>clean/clean_utils.c"]
+    CL --> CTL["<b>clean_token_list()</b><br/>→ free(value), free(node)"]
+    CL --> CCL["<b>clean_cmd_list()</b><br/>→ free_tab, free(path),<br/>  xclose × 2, free(node)"]
+
+    CEXIT["<b>clean_exit()</b><br/>clean/clean_utils.c"]
+    CEXIT --> CL
+    CEXIT --> CEL["<b>clean_env_list()</b><br/>→ free(key), free(value), free(node)"]
+    CEXIT --> RLC["rl_clear_history()"]
+    CEXIT --> EXIT["exit()"]
+
+    FREE_ALL["<b>free_all()</b><br/>clean/clean_utils.c"]
+    FREE_ALL --> CCL
+    FREE_ALL --> CTL
+
+    XCL["<b>xclose()</b><br/>clean/clean_utils.c"]
+    XCL --> CLOSE["close() + *fd = -1"]
+
+    FTAB["<b>free_tab()</b><br/>clean/clean_utils.c"]
+    FTAB --> FREES["free() × n + free(tab)"]
+
+    style CL fill:#da3633,color:#fff
+    style CEXIT fill:#da3633,color:#fff
+    style XCL fill:#da3633,color:#fff
+    style FTAB fill:#da3633,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>10. Utilitaires et structures de nœuds</h2>
+  <div class="mermaid">
+graph TD
+    subgraph "Fonctions utilitaires"
+        COMPARE["<b>ft_compare()</b><br/>utils/utils.c<br/>Compare 2 strings"]
+        KEYCOMP["<b>key_comp()</b><br/>utils/utils.c<br/>Différence de clés"]
+        GETSTATUS["<b>get_status()</b><br/>utils/get_status.c<br/>static int, retourne &status"]
+    end
+
+    subgraph "Nodes — t_env"
+        NODE_ENV2["<b>ft_node_env()</b><br/>node/functions_env.c<br/>malloc + init t_env"]
+        ADD_BACK3["<b>ft_add_back_env()</b><br/>node/functions_env.c<br/>Ajoute en fin de liste"]
+        DEL_ENV["<b>ft_lst_del_env()</b><br/>node/functions_env.c<br/>free key + value + node"]
+    end
+
+    subgraph "Nodes — t_parser"
+        NODE_PARS["<b>ft_node_pars()</b><br/>node/node_pars.c<br/>malloc + init t_parser<br/>fd_in=0, fd_out=1"]
+        ADD_BACK_P["<b>ft_addback_parse()</b><br/>node/node_pars.c<br/>Ajoute en fin de liste"]
+    end
+
+    subgraph "Signaux"
+        SIG_SET["setup_signal()"]
+        SIG_INIT["init_original_signals()"]
+        SIG_RESTORE["restore_original_signals()"]
+        SIG_IGNORE["ignore_signals()"]
+        SIG_HANDLER["sigint_handler()<br/>→ rl_on_new_line, rl_replace_line,<br/>  rl_redisplay, get_status=130"]
+    end
+
+    style GETSTATUS fill:#1f6feb,color:#fff
+    style NODE_ENV2 fill:#238636,color:#fff
+    style NODE_PARS fill:#238636,color:#fff
+  </div>
+</div>
+
+<div class="section">
+  <h2>11. Arbre d'appels complet (simplifié)</h2>
+  <div class="mermaid">
+graph LR
+    subgraph "Phase 1: Setup"
+        MAIN2["main"] --> S2["setup"]
+        S2 -->|"env OK"| SENV["setup_env → tokenize envp"]
+        S2 -->|"env vide"| CENV["create_env → PWD, SHLVL, _"]
+        S2 --> SIGS["init_original_signals + setup_signal"]
+    end
+
+    subgraph "Phase 2: REPL Loop"
+        MAIN2 --> LOOP2["main_loop"]
+        LOOP2 --> RL["readline()"]
+        RL --> TOK2["tokenizer → find_by_char → new_token_node"]
+        TOK2 --> EXP2["check_exp_var → check_sign → expand_in_str"]
+        EXP2 --> PARSE2["parse_token → parse_loop → all_else_if"]
+        PARSE2 --> EXEC2["executor"]
+    end
+
+    subgraph "Phase 3: Execute"
+        EXEC2 -->|"1 cmd"| SC["exec_single_cmd → builtin?fork?"]
+        EXEC2 -->|"pipeline"| EP["exec_pipeline → fork × n → pipe dup2 execve"]
+    end
+
+    subgraph "Phase 4: Clean"
+        EXEC2 --> CL2["clean_loop → clean_token_list + clean_cmd_list"]
+        LOOP2 --> CL2
+    end
+
+    style MAIN2 fill:#1f6feb,color:#fff
+    style LOOP2 fill:#1f6feb,color:#fff
+    style TOK2 fill:#a371f7,color:#fff
+    style EXP2 fill:#a371f7,color:#fff
+    style PARSE2 fill:#d29922,color:#fff
+    style EXEC2 fill:#238636,color:#fff
+    style CL2 fill:#da3633,color:#fff
+  </div>
+</div>
+
+<script>mermaid.initialize({startOnLoad:true, theme:'dark', securityLevel:'loose'});</script>
+</body>
+</html>

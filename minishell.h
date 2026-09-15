@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/10 06:59:03 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/10 07:06:05 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,12 @@
 // TODO: add t_redir, t_word, perhaps t_token_type & t_word_flags
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
+typedef enum e_token_type	t_token_t;
 typedef struct s_command	t_command;
 typedef struct s_cmd		t_cmd;
 typedef struct s_word		t_word;
 typedef struct s_redir		t_redir;
+typedef struct s_heredoc	t_heredoc;
 enum e_structure_type
 {
 	T_NULL_TYPE,
@@ -102,21 +104,19 @@ struct s_context
 	size_t	line_len;
 	char	*line;
 	t_token	*current_token;
-	int		token_lst_len;
+	int		token_cnt;
 	t_list	*token_lst;
-	int		redir_lst_len;
-	t_list	*redir_lst;
-	int		cmd_lst_len;
+	int		cmd_cnt;
 	t_list	*cmd_lst;
-	int		envp_lst_len;
+	int		envp_cnt;
 	t_list	*envp_lst;
 };
 // token
 struct s_token
 {
-	int		type;
-	size_t	start;
-	size_t	len;
+	t_token_t	type;
+	size_t		start;
+	size_t		len;
 };
 enum e_token_type
 {
@@ -143,22 +143,41 @@ enum e_word_flags
 	W_COMMAND = 1 << 1,
 	W_OPTION = 1 << 2,
 	W_PATH = 1 << 3,
+	W_EXPAND = 1 << 4,
+	W_TRIM = 1 << 5,
+	W_VAR = 1 << 6,
 };
 // redir
+union u_target
+{
+	t_word	*path;
+	t_list	*heredoc_lst;
+};
 struct s_redir
 {
+	int		type;
 	int		fd;
 	int		mode;
-	char	*fpath;
+	union
+	{
+		char	*path;
+		t_list	*heredocs;
+	}	target;
+};
+struct s_heredoc
+{
+	int				fd;
+	int				size;
+	char			*content;
+	union u_target	target;
 };
 // cmd
 struct s_cmd
 {
 	int		status;
-	int		token_lst_len;
+	int		token_cnt;
 	t_list	*token_lst;
-	int		redirs_count;
-	t_list	*redirs;
+	t_redir	redirs;
 	int		argc;
 	t_list	*argv;
 };
@@ -181,10 +200,10 @@ void		print_command(t_command command);
 // ======================================================== //
 // token.c
 int			get_token_type(char token_val);
-char		*get_token_name(int token_type);
+char		*get_token_name(t_token_t type);
 void		print_token(void *content);
-size_t		quote_len(char *quote_start, int quote_type);
-size_t		token_len(char *token_start, int token_type);
+size_t		quote_len(char *quote_start, t_token_t quote_type);
+size_t		token_len(char *token_start, t_token_t type);
 // tokenize.c
 void		token_lst_add_back(t_context *ctx, t_token *token);
 t_token		*build_token_at(char *line, size_t token_start);
@@ -195,7 +214,7 @@ int			tokenize(t_context *ctx);
 // ft_sublst.c
 t_list		*ft_sublst(t_list **lst, int start, int len);
 // parse_utils.c
-int			count_tokens_upto(t_list *token_lst, int token_type);
+int			count_tokens_upto(t_list *token_lst, t_token_t end_type);
 // parse.c
 int			valid_pipes(t_list *token_lst);
 int			init_cmd_lst(t_context *ctx);

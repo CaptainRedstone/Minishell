@@ -15,7 +15,7 @@
 /**
  * @brief Get token `name` from its `type` as in `e_token_type`.
  */
-char	*get_token_name(int type)
+char	*get_token_name(t_token_t type)
 {
 	if (type == TK_NULL)
 		return (TK_NULL_NAME);
@@ -79,14 +79,14 @@ void	print_token(void *content)
  * compute length of quote.
  * @attention Includes quote char
  */
-size_t	quote_len(char *token_str, int token_type)
+size_t	quote_len(char *token_str, t_token_t type)
 {
 	size_t	i;
 
 	i = 1;
-	while (token_str[i] && (token_type != get_token_type(token_str[i])))
+	while (token_str[i] && (type != get_token_type(token_str[i])))
 		i++;
-	if (token_type == get_token_type(token_str[i]))
+	if (type == get_token_type(token_str[i]))
 		i++;
 	return (i);
 }
@@ -95,7 +95,7 @@ size_t	quote_len(char *token_str, int token_type)
  * @brief Assuming `line` starts w/ token of `type` in `e_token_type`, 
  * compute length of token.
  */
-size_t	token_len(char *token_str, int type)
+size_t	token_len(char *token_str, t_token_t type)
 {
 	size_t	i;
 

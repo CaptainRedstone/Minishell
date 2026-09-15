@@ -12,6 +12,33 @@
 
 #include "../minishell.h"
 
+int	valid_pipes(t_list *token_lst)
+{
+	t_token	*token;
+
+	if (!token_lst || !(token_lst->content))
+		return (0);
+	token = token_lst->content;
+	if (token->type == TK_PIPE)
+		return (0);
+	while (token_lst->next)
+	{
+		if (token->type == TK_PIPE)
+		{
+			token_lst = token_lst->next;
+			token = token_lst->content;
+			if (token->type == TK_PIPE)
+				return (0);
+		}
+		if (token_lst->next)
+		{
+			token_lst = token_lst->next;
+			token = token_lst->content;
+		}
+	}
+	return (1);
+}
+
 int	valid_redirs_syntax(t_list *token_lst)
 {
 	t_token	*token;
@@ -33,7 +60,7 @@ int	valid_redirs_syntax(t_list *token_lst)
 	return (1);
 }
 
-int	count_tokens_upto(t_list *token_lst, int token_type)
+int	count_tokens_upto(t_list *token_lst, t_token_t end_type)
 {
 	t_token	*token;
 	int		count;
@@ -42,16 +69,21 @@ int	count_tokens_upto(t_list *token_lst, int token_type)
 	if (!token_lst)
 		return (0);
 	token = token_lst->content;
-	while (token_lst && token->type != token_type)
+	while (token_lst && token->type != end_type)
 	{
 		token_lst = token_lst->next;
 		if (token_lst)
 			token = token_lst->content;
 		count++;
 	}
-	if (token_lst && token->type == token_type)
+	if (token_lst && token->type == end_type)
 		return (count + 1);
 	return (count);
+}
+
+int	count_tokens_if(t_list *token_lst, int len, int (*cond)(t_token *token))
+{
+
 }
 
 int	count_cmd_args(t_list *token_lst)
