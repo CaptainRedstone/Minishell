@@ -73,14 +73,13 @@
 //						STRUCTURES							//
 // ======================================================== //
 // TODO: remove t_commmand
-// TODO: add t_redir, t_word, perhaps t_token_type & t_word_flags
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
 typedef struct s_command	t_command;
-typedef struct s_cmd		t_cmd;
 typedef struct s_word		t_word;
-typedef struct s_redir		t_redir;
 typedef struct s_heredoc	t_heredoc;
+typedef struct s_redir		t_redir;
+typedef struct s_cmd		t_cmd;
 enum e_structure_type
 {
 	T_NULL_TYPE,
@@ -147,28 +146,36 @@ enum e_word_flags
 	W_VAR = 1 << 6,
 };
 // redir
-union u_target
+typedef enum e_redir_type
 {
-	t_word	*path;
-	t_list	*heredoc_lst;
-};
+	R_IN,
+	R_OUT,
+	R_APPEND,
+	R_HEREDOC,
+}	t_redir_t;
+typedef enum e_redir_mode
+{
+	R_MODE_IN = O_RDONLY,
+	R_MODE_OUT = O_WRONLY | O_CREAT | O_TRUNC,
+	R_MODE_APPEND = O_WRONLY | O_CREAT | O_APPEND,
+	R_MODE_HEREDOC = O_RDONLY,
+}	t_redir_m;
+typedef union u_redir_val
+{
+	t_word		*path;
+	t_heredoc	*heredoc;
+}	t_redir_v;
 struct s_redir
 {
-	int		type;
-	int		fd;
-	int		mode;
-	union
-	{
-		char	*path;
-		t_list	*heredocs;
-	}	target;
+	int			fd;
+	t_redir_t	type;
+	t_redir_m	mode;
+	t_redir_v	val;
 };
 struct s_heredoc
 {
-	int				fd;
-	int				size;
-	char			*content;
-	union u_target	target;
+	char	*delim;
+	char	*body;
 };
 // cmd
 struct s_cmd
@@ -176,7 +183,8 @@ struct s_cmd
 	int		status;
 	int		token_cnt;
 	t_list	*token_lst;
-	t_redir	redirs;
+	int		redir_cnt;
+	t_list	*redir_lst;
 	int		argc;
 	t_list	*argv;
 };
