@@ -6,66 +6,24 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/10 07:06:26 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 14:22:44 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// TODO: adapt to show args and redirs
-void	print_redir(void *content)
-{
-	t_redir	*rdr;
+// int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
+// {
+// 	t_token *token;
+// 	t_word	*word;
 
-	if (content)
-	{
-		rdr = content;
-		printf("rdr: fd(%d) mode(%d) type(%d) ",
-			rdr->fd, rdr->mode, rdr->type);
-		if (rdr->type != R_HEREDOC)
-			printf("val(%s)\n", rdr->val.path);
-		else
-			printf("val(%s)\n", rdr->val.delim);
-	}
-}
+// 	token = (*token_lst)->content;
+// 	word = ft_calloc(1, sizeof(t_word));
+// 	word->flags =
+// 	if (!(cmd->argv))
+// 		word->flags =
+// }
 
-void	print_cmd(void *content)
-{
-	t_cmd	*cmd;
-
-	if (content)
-	{
-		cmd = content;
-		printf("cmd: state (%d), redir count (%d), argc (%d)\n",
-			cmd->status,
-			cmd->redir_cnt,
-			cmd->argc);
-		ft_lstiter(cmd->redir_lst, &print_redir);
-		ft_lstiter(cmd->argv, &print_token);
-	}
-}
-
-int	init_redir(t_list **redir_lst, t_list *token_lst, char *line)
-{
-	t_redir	*redir;
-	t_token	*token;
-
-	if (!valid_redir_syntax(token_lst))
-		return (0);
-	redir = ft_calloc(1, sizeof(t_redir));
-	token = token_lst->content;
-	if (redir && token->type == TK_REDIR_OUT)
-		redir->fd = 1;
-	set_redir_type(redir, token);
-	set_redir_mode(redir);
-	set_redir_val(redir, token_lst->next->content, line);
-	if (!redir)
-		return (0);
-	ft_lstadd_back(redir_lst, ft_lstnew(redir));
-	return (1);
-}
-
-// TODO: refactoring
 int	init_cmd(t_context *ctx, t_list **token_lst)
 {
 	t_cmd	*cmd;
@@ -78,12 +36,7 @@ int	init_cmd(t_context *ctx, t_list **token_lst)
 	{
 		token = (*token_lst)->content;
 		if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
-		{
-			if (!init_redir(&(cmd->redir_lst), (*token_lst), ctx->line))
-				return (free(cmd), 0);
-			cmd->redir_cnt++;
-			*token_lst = (*token_lst)->next->next;
-		}
+			init_redir(cmd, token_lst, ctx->line);
 		else if (token->type != TK_PIPE)
 		{
 			ft_lstadd_back(&(cmd->argv), ft_lstnew(token));

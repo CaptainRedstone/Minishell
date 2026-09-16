@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/10 07:06:05 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 13:22:40 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,9 @@ struct s_word
 };
 enum e_word_flags
 {
-	W_NULL,
-	W_NAME = 1 << 0,
+	W_NULL = 1 << 0,
 	W_COMMAND = 1 << 1,
-	W_OPTION = 1 << 2,
+	W_QUOTE = 1 << 2,
 	W_PATH = 1 << 3,
 	W_EXPAND = 1 << 4,
 	W_TRIM = 1 << 5,
@@ -201,12 +200,13 @@ int			tokenize(t_context *ctx);
 // ======================================================== //
 // ft_sublst.c
 t_list		*ft_sublst(t_list **lst, int start, int len);
+// parse_init_redir.c
+int			init_redir(t_cmd *cmd, t_list **token_lst, char *line);
 // parse_utils.c
 int			valid_pipes(t_list *token_lst);
 int			valid_redir_syntax(t_list *token_lst);
-int			set_redir_type(t_redir *redir, t_token *token);
-int			set_redir_mode(t_redir *redir);
-int			set_redir_val(t_redir *redir, t_token *token, char *line);
+void		print_cmd(void *content);
+void		print_redir(void *content);
 // parse.c
 int			init_cmd_lst(t_context *ctx);
 // ======================================================== //

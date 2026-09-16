@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/09 16:09:39 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/10 06:55:55 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 13:06:05 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,45 +54,34 @@ int	valid_redir_syntax(t_list *token_lst)
 	return (1);
 }
 
-int	set_redir_val(t_redir *redir, t_token *token, char *line)
+void	print_redir(void *content)
 {
-	if (!redir || !line)
-		return (0);
-	if (redir->type == R_HEREDOC)
-		redir->val.delim = ft_substr(line, token->start, token->len);
-	else
-		redir->val.path = ft_substr(line, token->start, token->len);
-	if (redir->val.path || redir->val.delim)
-		return (1);
-	return (0);
+	t_redir	*rdr;
+
+	if (content)
+	{
+		rdr = content;
+		printf("rdr: fd(%d) mode(%d) type(%d) ",
+			rdr->fd, rdr->mode, rdr->type);
+		if (rdr->type != R_HEREDOC)
+			printf("val(%s)\n", rdr->val.path);
+		else
+			printf("val(%s)\n", rdr->val.delim);
+	}
 }
 
-int	set_redir_mode(t_redir *redir)
+void	print_cmd(void *content)
 {
-	if (!redir)
-		return (0);
-	if (redir->type == R_IN)
-		redir->mode = O_RDONLY;
-	if (redir->type == R_OUT)
-		redir->mode = O_WRONLY | O_CREAT | O_TRUNC;
-	if (redir->type == R_APPEND)
-		redir->mode = O_WRONLY | O_CREAT | O_APPEND;
-	if (redir->type == R_HEREDOC)
-		redir->mode = O_RDONLY;
-	return (1);
-}
+	t_cmd	*cmd;
 
-int	set_redir_type(t_redir *redir, t_token *token)
-{
-	if (!redir)
-		return (0);
-	if (token->type == TK_REDIR_IN && token->len == 1)
-		redir->type = R_IN;
-	if (token->type == TK_REDIR_OUT && token->len == 1)
-		redir->type = R_OUT;
-	if (token->type == TK_REDIR_IN && token->len == 2)
-		redir->type = R_APPEND;
-	if (token->type == TK_REDIR_OUT && token->len == 2)
-		redir->type = R_HEREDOC;
-	return (1);
+	if (content)
+	{
+		cmd = content;
+		printf("cmd: state (%d), redir count (%d), argc (%d)\n",
+			cmd->status,
+			cmd->redir_cnt,
+			cmd->argc);
+		ft_lstiter(cmd->redir_lst, &print_redir);
+		ft_lstiter(cmd->argv, &print_token);
+	}
 }
