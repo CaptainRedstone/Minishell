@@ -148,17 +148,10 @@ typedef enum e_redir_type
 	R_APPEND,
 	R_HEREDOC,
 }	t_redir_t;
-enum e_redir_mode
-{
-	R_MODE_IN = O_RDONLY,
-	R_MODE_OUT = O_WRONLY | O_CREAT | O_TRUNC,
-	R_MODE_APPEND = O_WRONLY | O_CREAT | O_APPEND,
-	R_MODE_HEREDOC = O_RDONLY,
-};
 typedef union u_redir_val
 {
-	char		*path;
-	t_heredoc	*heredoc;
+	char	*path;
+	char	*delim;
 }	t_redir_v;
 struct s_redir
 {
@@ -167,17 +160,10 @@ struct s_redir
 	t_redir_t	type;
 	t_redir_v	val;
 };
-struct s_heredoc
-{
-	char	*delim;
-	char	*body;
-};
 // cmd
 struct s_cmd
 {
 	int		status;
-	int		token_cnt;
-	t_list	*token_lst;
 	int		redir_cnt;
 	t_list	*redir_lst;
 	int		argc;
@@ -218,8 +204,9 @@ t_list		*ft_sublst(t_list **lst, int start, int len);
 // parse_utils.c
 int			valid_pipes(t_list *token_lst);
 int			valid_redir_syntax(t_list *token_lst);
-int			count_redirs(t_list *token_lst);
-int			count_cmd_args(t_list *token_lst);
+int			set_redir_type(t_redir *redir, t_token *token);
+int			set_redir_mode(t_redir *redir);
+int			set_redir_val(t_redir *redir, t_token *token, char *line);
 // parse.c
 int			init_cmd_lst(t_context *ctx);
 // ======================================================== //

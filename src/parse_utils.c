@@ -41,10 +41,11 @@ int	valid_redir_syntax(t_list *token_lst)
 
 	if (!token_lst || !(token_lst->next))
 		return (0);
-	
 	token = token_lst->content;
 	if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
 	{
+		if (2 < token->len)
+			return (0);
 		token = token_lst->next->content;
 		if (token->type == TK_PIPE
 			|| token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
@@ -53,19 +54,45 @@ int	valid_redir_syntax(t_list *token_lst)
 	return (1);
 }
 
-int	count_cmd_args(t_list *token_lst)
+int	set_redir_val(t_redir *redir, t_token *token, char *line)
 {
-	int		count;
-	t_token	*token;
+	if (!redir || !line)
+		return (0);
+	if (redir->type == R_HEREDOC)
+		redir->val.delim = ft_substr(line, token->start, token->len);
+	else
+		redir->val.path = ft_substr(line, token->start, token->len);
+	if (redir->val.path || redir->val.delim)
+		return (1);
+	return (0);
+}
 
-	count = 0;
-	while (token_lst)
-	{
-		token = token_lst->content;
-		if (token->type == TK_PIPE)
-			return (count);
-		token_lst = token_lst->next;
-		count++;
-	}
-	return (count);
+int	set_redir_mode(t_redir *redir)
+{
+	if (!redir)
+		return (0);
+	if (redir->type == R_IN)
+		redir->mode = O_RDONLY;
+	if (redir->type == R_OUT)
+		redir->mode = O_WRONLY | O_CREAT | O_TRUNC;
+	if (redir->type == R_APPEND)
+		redir->mode = O_WRONLY | O_CREAT | O_APPEND;
+	if (redir->type == R_HEREDOC)
+		redir->mode = O_RDONLY;
+	return (1);
+}
+
+int	set_redir_type(t_redir *redir, t_token *token)
+{
+	if (!redir)
+		return (0);
+	if (token->type == TK_REDIR_IN && token->len == 1)
+		redir->type = R_IN;
+	if (token->type == TK_REDIR_OUT && token->len == 1)
+		redir->type = R_OUT;
+	if (token->type == TK_REDIR_IN && token->len == 2)
+		redir->type = R_APPEND;
+	if (token->type == TK_REDIR_OUT && token->len == 2)
+		redir->type = R_HEREDOC;
+	return (1);
 }
