@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 13:22:40 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 15:59:09 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,11 +133,10 @@ enum e_word_flags
 {
 	W_NULL = 1 << 0,
 	W_COMMAND = 1 << 1,
-	W_QUOTE = 1 << 2,
-	W_PATH = 1 << 3,
-	W_EXPAND = 1 << 4,
-	W_TRIM = 1 << 5,
-	W_VAR = 1 << 6,
+	W_SQUOTE = 1 << 2,
+	W_DQUOTE = 1 << 3,
+	W_UNKNOWN = 1 << 4,
+	W_EXPAND = 1 << 5,
 };
 // redir
 typedef enum e_redir_type

@@ -6,23 +6,33 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 14:22:44 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 16:05:12 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
-// {
-// 	t_token *token;
-// 	t_word	*word;
+int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
+{
+	t_token *token;
+	t_word	*word;
 
-// 	token = (*token_lst)->content;
-// 	word = ft_calloc(1, sizeof(t_word));
-// 	word->flags =
-// 	if (!(cmd->argv))
-// 		word->flags =
-// }
+	token = (*token_lst)->content;
+	word = ft_calloc(1, sizeof(t_word));
+	if (!word || !(token->len))
+	word->flags = W_NULL;
+	if (!(cmd->argv))
+		word->flags |= W_COMMAND;
+	if (token->type == TK_SQUOTE)
+		word->flags |= W_SQUOTE;
+	if (token->type == TK_DQUOTE)
+		word->flags |= W_DQUOTE;
+	word->str = ft_substr(line, token->start, token->len);
+	ft_lstadd_back(&(cmd->argv), ft_lstnew(word));
+	cmd->argc++;
+	*token_lst = (*token_lst)->next;
+	return (1);
+}
 
 int	init_cmd(t_context *ctx, t_list **token_lst)
 {
