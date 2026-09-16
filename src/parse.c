@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 16:05:12 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 16:07:09 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
 
 	token = (*token_lst)->content;
 	word = ft_calloc(1, sizeof(t_word));
-	if (!word || !(token->len))
+	if (!word || token->len < 1)
+		return (0);
 	word->flags = W_NULL;
 	if (!(cmd->argv))
 		word->flags |= W_COMMAND;
