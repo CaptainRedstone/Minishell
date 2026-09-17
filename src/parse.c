@@ -15,6 +15,7 @@
 void	delete_arg(void *content)
 {
 	t_word	*word;
+
 	if (!content)
 		return ;
 	word = content;
@@ -22,6 +23,22 @@ void	delete_arg(void *content)
 	word->str = NULL;
 	free(word);
 	word = NULL;
+}
+
+void	delete_redir(void *content)
+{
+	t_redir	*redir;
+
+	if (!content)
+		return ;
+	redir = content;
+	if (redir->type == R_HEREDOC)
+		free(redir->val.delim);
+	else
+		free(redir->val.path);
+	redir->val = (t_redir_v)0;
+	free(redir);
+	redir = NULL;
 }
 
 int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
