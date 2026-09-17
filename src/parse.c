@@ -6,7 +6,7 @@
 /*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 16:07:09 by aforcada         ###   ########.fr       */
+/*   Updated: 2026/09/16 16:22:12 by aforcada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
 {
-	t_token *token;
+	t_token	*token;
 	t_word	*word;
 
 	token = (*token_lst)->content;
@@ -28,7 +28,11 @@ int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
 		word->flags |= W_SQUOTE;
 	if (token->type == TK_DQUOTE)
 		word->flags |= W_DQUOTE;
+	if (token->type == TK_WORD)
+		word->flags |= W_WORD;
 	word->str = ft_substr(line, token->start, token->len);
+	if (!(word->str))
+		return (free(word), 0);
 	ft_lstadd_back(&(cmd->argv), ft_lstnew(word));
 	cmd->argc++;
 	*token_lst = (*token_lst)->next;
@@ -49,11 +53,7 @@ int	init_cmd(t_context *ctx, t_list **token_lst)
 		if (token->type == TK_REDIR_IN || token->type == TK_REDIR_OUT)
 			init_redir(cmd, token_lst, ctx->line);
 		else if (token->type != TK_PIPE)
-		{
-			ft_lstadd_back(&(cmd->argv), ft_lstnew(token));
-			cmd->argc++;
-			*token_lst = (*token_lst)->next;
-		}
+			init_argv(cmd, token_lst, ctx->line);
 		else
 			break ;
 	}

@@ -68,7 +68,7 @@
 // ======================================================== //
 //						STRUCTURES							//
 // ======================================================== //
-// TODO: remove t_commmand
+// TODO: remove t_commmand and dependencies
 typedef struct s_context	t_context;
 typedef struct s_token		t_token;
 typedef struct s_command	t_command;
@@ -135,7 +135,7 @@ enum e_word_flags
 	W_COMMAND = 1 << 1,
 	W_SQUOTE = 1 << 2,
 	W_DQUOTE = 1 << 3,
-	W_UNKNOWN = 1 << 4,
+	W_WORD = 1 << 4,
 	W_EXPAND = 1 << 5,
 };
 // redir

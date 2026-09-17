@@ -54,6 +54,27 @@ int	valid_redir_syntax(t_list *token_lst)
 	return (1);
 }
 
+void	print_word(void *content)
+{
+	t_word	*word;
+
+	if (!content)
+		return ;
+	word = content;
+	printf("flags:");
+	if (word->flags & W_COMMAND)
+		printf("command ");
+	if (word->flags & W_WORD)
+		printf("word ");
+	if (word->flags & W_SQUOTE)
+		printf("squote ");
+	if (word->flags & W_DQUOTE)
+		printf("dquote ");
+	if (word->flags & W_EXPAND)
+		printf("expand ");
+	printf(" str:%s\n", word->str);
+}
+
 void	print_redir(void *content)
 {
 	t_redir	*rdr;
@@ -82,6 +103,6 @@ void	print_cmd(void *content)
 			cmd->redir_cnt,
 			cmd->argc);
 		ft_lstiter(cmd->redir_lst, &print_redir);
-		ft_lstiter(cmd->argv, &print_token);
+		ft_lstiter(cmd->argv, &print_word);
 	}
 }
