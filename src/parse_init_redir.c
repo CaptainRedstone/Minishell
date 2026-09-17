@@ -71,7 +71,10 @@ int	init_redir(t_cmd *cmd, t_list **token_lst, char *line)
 	set_redir_val(redir, (*token_lst)->next->content, line);
 	if (!redir)
 		return (0);
-	ft_lstadd_back(&(cmd->redir_lst), ft_lstnew(redir));
+	if (token->type == TK_REDIR_IN)
+		ft_lstadd_back(&(cmd->redir_in_lst), ft_lstnew(redir));
+	if (token->type == TK_REDIR_OUT)
+		ft_lstadd_back(&(cmd->redir_out_lst), ft_lstnew(redir));
 	cmd->redir_cnt++;
 	*token_lst = (*token_lst)->next->next;
 	return (1);

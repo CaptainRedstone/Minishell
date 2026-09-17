@@ -46,7 +46,7 @@ void	token_lst_add_back(t_context *ctx, t_token *token)
  * @param token_start starting position of token
  * @return token
  */
-t_token	*build_token_at(char *line, size_t token_start)
+t_token	*build_token_from(char *line, size_t token_start)
 {
 	t_token	*token;
 
@@ -67,20 +67,22 @@ t_token	*build_token_at(char *line, size_t token_start)
 int	tokenize(t_context *ctx)
 {
 	size_t	idx;
+	t_token	*token;
 
 	idx = 0;
 	while (idx < ctx->line_len)
 	{
-		ctx->current_token = build_token_at(ctx->line, idx);
-		if (!(ctx->current_token) || !(ctx->current_token->len))
+		token = build_token_from(ctx->line, idx);
+		if (!(token) || !(token->len))
 			break ;
-		if (ctx->current_token->type != TK_BLANK)
-			token_lst_add_back(ctx, ctx->current_token);
-		idx += ctx->current_token->len;
-		if (ctx->current_token->type == TK_BLANK)
-			delete_token(ctx->current_token);
+		if (token->type != TK_BLANK)
+			token_lst_add_back(ctx, token);
+		idx += token->len;
+		if (token->type == TK_BLANK)
+			delete_token(token);
 	}
 	if (idx < ctx->line_len)
-		return (ft_lstclear(&(ctx->token_lst), &delete_token), 0);
+		return (ft_lstclear(&(ctx->token_lst), &delete_token),
+			delete_token(token), 0);
 	return (1);
 }

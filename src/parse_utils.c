@@ -12,6 +12,10 @@
 
 #include "../minishell.h"
 
+/**
+ * @brief Check if pipe syntax is valid.
+ * @param token_lst List of tokens.
+ */
 int	valid_pipes(t_list *token_lst)
 {
 	t_token	*token;
@@ -35,6 +39,11 @@ int	valid_pipes(t_list *token_lst)
 	return (1);
 }
 
+/**
+ * @brief Check if a redirection has valid syntax.
+ * @param token_lst List with first element a redirection token
+ * and second element a word/quote.
+ */
 int	valid_redir_syntax(t_list *token_lst)
 {
 	t_token	*token;
@@ -54,6 +63,9 @@ int	valid_redir_syntax(t_list *token_lst)
 	return (1);
 }
 
+/**
+ * @brief Print word
+ */
 void	print_word(void *content)
 {
 	t_word	*word;
@@ -75,34 +87,39 @@ void	print_word(void *content)
 	printf(" str:%s\n", word->str);
 }
 
+/**
+ * @brief Print redirection
+ */
 void	print_redir(void *content)
 {
-	t_redir	*rdr;
+	t_redir	*redir;
 
-	if (content)
-	{
-		rdr = content;
-		printf("rdr: fd(%d) mode(%d) type(%d) ",
-			rdr->fd, rdr->mode, rdr->type);
-		if (rdr->type != R_HEREDOC)
-			printf("val(%s)\n", rdr->val.path);
-		else
-			printf("val(%s)\n", rdr->val.delim);
-	}
+	if (!content)
+		return ;
+	redir = content;
+	printf("redir: fd(%d) mode(%d) type(%d) ",
+		redir->fd, redir->mode, redir->type);
+	if (redir->type != R_HEREDOC)
+		printf("val(%s)\n", redir->val.path);
+	else
+		printf("val(%s)\n", redir->val.delim);
 }
 
+/**
+ * @brief Print command
+ */
 void	print_cmd(void *content)
 {
 	t_cmd	*cmd;
 
-	if (content)
-	{
-		cmd = content;
-		printf("cmd: state (%d), redir count (%d), argc (%d)\n",
-			cmd->status,
-			cmd->redir_cnt,
-			cmd->argc);
-		ft_lstiter(cmd->redir_lst, &print_redir);
-		ft_lstiter(cmd->argv, &print_word);
-	}
+	if (!content)
+		return ;
+	cmd = content;
+	printf("cmd: state (%d), redir count (%d), argc (%d)\n",
+		cmd->status,
+		cmd->redir_cnt,
+		cmd->argc);
+	ft_lstiter(cmd->redir_in_lst, &print_redir);
+	ft_lstiter(cmd->redir_out_lst, &print_redir);
+	ft_lstiter(cmd->argv, &print_word);
 }

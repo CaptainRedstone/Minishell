@@ -13,7 +13,9 @@
 #include "../minishell.h"
 
 /**
- * @brief Get token `name` from its `type` as in `e_token_type`.
+ * @brief Get token `name` from its `type`.
+ * @param type Type of token.
+ * @return String with token name.
  */
 char	*get_token_name(t_token_t type)
 {
@@ -38,7 +40,7 @@ char	*get_token_name(t_token_t type)
  * @brief Returns the token type from the first character of
  *  the token string.
  * @param c First character of the token string.
- * @return token type
+ * @return Token type.
  */
 t_token_t	get_token_type(char c)
 {
@@ -59,14 +61,15 @@ t_token_t	get_token_type(char c)
 
 /**
  * @brief Print token
+ * @param content 
  */
 void	print_token(void *content)
 {
 	t_token	*token;
 
-	token = content;
-	if (!token)
+	if (!content)
 		return ;
+	token = content;
 	printf("%s[%lu:%lu]\n",
 		get_token_name(token->type),
 		token->start,

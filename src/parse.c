@@ -68,8 +68,8 @@ int	init_cmd(t_context *ctx, t_list **token_lst)
 
 int	init_cmd_lst(t_context *ctx)
 {
-	if (!ctx || !(ctx->token_lst) || !valid_pipes(ctx->token_lst))
-		return (0);
+	if (!(ctx->token_lst) || !valid_pipes(ctx->token_lst))
+		return (ft_lstclear(&(ctx->token_lst), &delete_token), 0);
 	while (ctx->token_lst)
 	{
 		init_cmd(ctx, &(ctx->token_lst));

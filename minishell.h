@@ -163,7 +163,8 @@ struct s_cmd
 {
 	int		status;
 	int		redir_cnt;
-	t_list	*redir_lst;
+	t_list	*redir_in_lst;
+	t_list	*redir_out_lst;
 	int		argc;
 	t_list	*argv;
 };
@@ -191,8 +192,9 @@ void		print_token(void *content);
 size_t		quote_len(char *quote_start, t_token_t quote_type);
 size_t		token_len(char *token_start, t_token_t type);
 // tokenize.c
+void		delete_token(void *token);
 void		token_lst_add_back(t_context *ctx, t_token *token);
-t_token		*build_token_at(char *line, size_t token_start);
+t_token		*build_token_from(char *line, size_t token_start);
 int			tokenize(t_context *ctx);
 // ======================================================== //
 //						PARSING								//
@@ -204,8 +206,9 @@ int			init_redir(t_cmd *cmd, t_list **token_lst, char *line);
 // parse_utils.c
 int			valid_pipes(t_list *token_lst);
 int			valid_redir_syntax(t_list *token_lst);
-void		print_cmd(void *content);
+void		print_word(void *content);
 void		print_redir(void *content);
+void		print_cmd(void *content);
 // parse.c
 int			init_cmd_lst(t_context *ctx);
 // ======================================================== //
