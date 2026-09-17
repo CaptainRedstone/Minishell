@@ -13,16 +13,19 @@
 #include "../minishell.h"
 
 /**
- * @brief	Since fields of the token structure DONT need allocated memory,
- * this function does nothing.
+ * @brief	Free and set input token to NULL.
+ * @param	token
  */
 void	delete_token(void *token)
 {
-	(void)token;
+	free(token);
+	token = NULL;
 };
 
 /**
- * @brief	Appends token to the token list held by context.
+ * @brief	Appends token to the token list in context.
+ * @param	ctx Context with token list (list can be empty).
+ * @param	token Added to the back of the list.
  */
 void	token_lst_add_back(t_context *ctx, t_token *token)
 {
@@ -31,16 +34,17 @@ void	token_lst_add_back(t_context *ctx, t_token *token)
 	if (!ctx || !token)
 		return ;
 	node = ft_lstnew((void *)token);
-	if (!(ctx->token_lst))
-		ctx->token_lst = node;
-	else
-		ft_lstadd_back(&(ctx->token_lst), node);
+	ft_lstadd_back(&(ctx->token_lst), node);
 	ctx->token_cnt++;
 }
 
 /**
- * @brief Builds a token from char(s) in line starting at token_start.
- * Creates a memory allocated `token` from type, position, and length`token_str`.
+ * @brief Builds token from line string starting from given position.
+ * Allocates a `token` with type, starting position, and 
+ * computed length.
+ * @param line input string to build token from
+ * @param token_start starting position of token
+ * @return token
  */
 t_token	*build_token_at(char *line, size_t token_start)
 {
@@ -56,9 +60,9 @@ t_token	*build_token_at(char *line, size_t token_start)
 }
 
 /**
- * @brief Assumes `ctx` has `line` and `line_len` set.
- * Builds tokens from `line` and stores them in `ctx->token_lst`.
- * @return 1 on success, 0 on failure.
+ * @brief Builds tokens from line, storing them in context.
+ * @param ctx Context holding line string and empty token list.
+ * @return `1` on success, `0` on failure.
  */
 int	tokenize(t_context *ctx)
 {
@@ -74,7 +78,7 @@ int	tokenize(t_context *ctx)
 			token_lst_add_back(ctx, ctx->current_token);
 		idx += ctx->current_token->len;
 		if (ctx->current_token->type == TK_BLANK)
-			free(ctx->current_token);
+			delete_token(ctx->current_token);
 	}
 	if (idx < ctx->line_len)
 		return (ft_lstclear(&(ctx->token_lst), &delete_token), 0);

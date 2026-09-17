@@ -35,7 +35,10 @@ char	*get_token_name(t_token_t type)
 }
 
 /**
- * @brief Get token `type` as in `e_token_type` from first token value `c`.
+ * @brief Returns the token type from the first character of
+ *  the token string.
+ * @param c First character of the token string.
+ * @return token type
  */
 t_token_t	get_token_type(char c)
 {
@@ -71,9 +74,10 @@ void	print_token(void *content)
 }
 
 /**
- * @brief Assuming `line` starts w/ quote of type `TK_SQUOTE` or `TK_DQUOTE`,
- * compute length of quote.
- * @attention Includes quote char
+ * @brief Computes the length of the input quote.
+ * @param token_str Start of token string, includes quote char.
+ * @param type Type of quote, single or double.
+ * @return Quote length.
  */
 size_t	quote_len(char *token_str, t_token_t type)
 {
@@ -88,8 +92,10 @@ size_t	quote_len(char *token_str, t_token_t type)
 }
 
 /**
- * @brief Assuming `line` starts w/ token of `type` in `e_token_type`, 
- * compute length of token.
+ * @brief Computes the length of token string with the given type.
+ * @param token_str Start of token string.
+ * @param type Token type.
+ * @return Token length.
  */
 size_t	token_len(char *token_str, t_token_t type)
 {
