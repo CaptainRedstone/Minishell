@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/02 16:12:50 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 16:22:12 by aforcada         ###   ########.fr       */
+/*   Created: 2026/09/17 18:56:23 by ethrober          #+#    #+#             */
+/*   Updated: 2026/09/17 18:56:30 by ethrober         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	delete_redir(void *content)
 		free(redir->val.delim);
 	else
 		free(redir->val.path);
-	redir->val = (t_redir_v)0;
 	free(redir);
 	redir = NULL;
 }

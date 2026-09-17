@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aforcada <aforcada@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/30 10:43:09 by aforcada          #+#    #+#             */
-/*   Updated: 2026/09/16 15:59:09 by aforcada         ###   ########.fr       */
+/*   Created: 2026/09/17 18:46:37 by ethrober          #+#    #+#             */
+/*   Updated: 2026/09/17 18:46:37 by ethrober         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,4 +222,6 @@ void		ft_echo(t_command command);
 void		ft_exit(t_command command);
 void		ft_color(t_command command);
 void		ft_executable(t_command command); */
+void		monitor(t_context *ctx);
+
 #endif
