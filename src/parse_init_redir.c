@@ -42,7 +42,7 @@ static int	set_redir_mode(t_redir *redir)
 
 static int	set_redir_type(t_redir *redir, t_token *token)
 {
-	if (!redir)
+	if (!redir || !token)
 		return (0);
 	if (token->type == TK_REDIR_IN && token->len == 1)
 		redir->type = R_IN;
@@ -55,6 +55,14 @@ static int	set_redir_type(t_redir *redir, t_token *token)
 	return (1);
 }
 
+/**
+ * @brief Builds a redirection in the appropriate field
+ *  in the command structure
+ * @param cmd Command structure with in AND out redirection lists
+ * @param token_lst First 2 tokens have the redirection data
+ * @param line String with redirection value
+ * @return `1` on success, `0` on failure
+ */
 int	init_redir(t_cmd *cmd, t_list **token_lst, char *line)
 {
 	t_redir	*redir;

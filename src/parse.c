@@ -12,6 +12,18 @@
 
 #include "../minishell.h"
 
+void	delete_arg(void *content)
+{
+	t_word	*word;
+	if (!content)
+		return ;
+	word = content;
+	free(word->str);
+	word->str = NULL;
+	free(word);
+	word = NULL;
+}
+
 int	init_argv(t_cmd *cmd, t_list **token_lst, char *line)
 {
 	t_token	*token;
