@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/08 14:46:59 by ethrober          #+#    #+#             */
-/*   Updated: 2026/10/08 14:46:59 by ethrober         ###   ########.ch       */
+/*   Created: 2026/10/09 14:10:34 by ethrober          #+#    #+#             */
+/*   Updated: 2026/10/09 14:12:35 by ethrober         ###   ########.ch       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ static void	bump_shlvl(t_context *ctx)
 		lvl = ft_atoi(val);
 	if (lvl < 0)
 		lvl = -1;
-	num = ft_itoa(lvl + 1);
+	if (lvl + 1 > 999)
+		num = ft_itoa(0);
+	else
+		num = ft_itoa(lvl + 1);
 	if (num)
 		set_env_var(ctx, "SHLVL", num);
 	free(num);
