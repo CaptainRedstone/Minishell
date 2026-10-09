@@ -69,6 +69,12 @@ make fclean   # remove object files and the binary
 make re       # fclean + all
 ```
 
+For testing with valgrind :
+
+```sh
+valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all --suppressions=./ignore_readline_leaks.supp --track-fds=yes ./minishell
+```
+
 Examples (inside minishell):
 
 ```sh
@@ -95,3 +101,4 @@ AI was used as a support tool, and all its output was reviewed, tested and under
 
 - **README**: AI helped draft and structure this README from the project subject.
 - **Concepts**: AI was used to clarify concepts such as data races, deadlocks and the dining philosophers problem.
+- **Makefile**: Adapting the Makefile to the final structure of the project.
