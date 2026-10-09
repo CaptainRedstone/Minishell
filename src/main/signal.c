@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 14:41:18 by ethrober          #+#    #+#             */
-/*   Updated: 2026/10/08 14:41:18 by ethrober         ###   ########.ch       */
+/*   Updated: 2026/10/09 18:54:21 by ethrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ volatile sig_atomic_t	g_signal;
  */
 void	handle_signal(int sig)
 {
-	g_signal =	sig;
+	g_signal = sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   welcome.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 14:45:24 by ethrober          #+#    #+#             */
-/*   Updated: 2026/10/08 14:45:24 by ethrober         ###   ########.ch       */
+/*   Updated: 2026/10/09 18:50:55 by ethrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 void	print_welcome(t_context *ctx)
 {
-	char *welcome;
-	char *user;
+	char	*welcome;
+	char	*user;
 
 	user = get_env(ctx, "USER");
 	if (!user)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 14:48:30 by ethrober          #+#    #+#             */
-/*   Updated: 2026/10/08 14:48:30 by ethrober         ###   ########.ch       */
+/*   Updated: 2026/10/09 18:48:53 by ethrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	*try_dir(char *dir, char *name, int *perm)
 
 static char	*path_fail(char *name, int perm, int *code)
 {
-	*code =	127;
+	*code = 127;
 	if (perm)
 	{
 		*code = 126;

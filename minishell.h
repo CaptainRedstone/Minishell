@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ethrober <ethrober@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: ethrober <ethrober@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 12:56:50 by ethrober          #+#    #+#             */
-/*   Updated: 2026/10/08 12:56:50 by ethrober         ###   ########.ch       */
+/*   Updated: 2026/10/09 18:58:09 by ethrober         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,13 @@ extern volatile sig_atomic_t	g_signal;
 // ======================================================== //
 //						STRUCTURES							//
 // ======================================================== //
-typedef struct s_context	t_context;
-typedef struct s_token		t_token;
-typedef struct s_word		t_word;
-typedef struct s_heredoc	t_heredoc;
-typedef struct s_redir		t_redir;
-typedef struct s_cmd		t_cmd;
-typedef struct s_exp		t_exp;
+typedef struct s_context		t_context;
+typedef struct s_token			t_token;
+typedef struct s_word			t_word;
+typedef struct s_heredoc		t_heredoc;
+typedef struct s_redir			t_redir;
+typedef struct s_cmd			t_cmd;
+typedef struct s_exp			t_exp;
 enum e_structure_type
 {
 	T_NULL_TYPE,
@@ -184,6 +184,7 @@ struct s_exp
 	int			started;
 	int			split;
 };
+
 // ======================================================== //
 //						PROMPTING							//
 // ======================================================== //
